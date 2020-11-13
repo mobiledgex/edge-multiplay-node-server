@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: server.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: server.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  @license
+ *  Copyright 2018-2020 MobiledgeX, Inc. All rights and licenses reserved.
+ *  MobiledgeX, Inc. 156 2nd Street #408, San Francisco, CA 94105
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License")
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+*/
+
+/**
+ * @fileOverview This is a sample code for a light game server , the server communicates with a unity client
+ * @module server
+ * @requires http
+ * @requires WebSocket
+ * @requires url
+ * @requires dgram
+ * 
+ */
+
+const http = require('http')
+const WebSocket = require('ws')
+const url = require('url')
+const server = http.createServer()
+const wsServer = new WebSocket.Server({ noServer: true })
+const dgram = require('dgram')
+const udpServer = dgram.createSocket('udp4')
+const Lobby = require('./models/Lobby').Lobby
+const UDPClient = require('./models/UDPClient').UDPClient
+const events = require('./models/Events').Events
+const util = require('./util/util').util
+const MAX_ROOMS_PER_LOBBY = 5 // Change to the desired maximum rooms per lobby based on your number of rooms members per room &amp; the app instance flavor
+let lobby = new Lobby(MAX_ROOMS_PER_LOBBY)
+
+server.on('upgrade', function upgrade(request, socket, head) {
+    var parsedUrl = url.parse(request.url, true, true)
+    const pathName = parsedUrl.pathname
+    if (pathName === '/') {
+        wsServer.handleUpgrade(request, socket, head, function done(ws) {
+            wsServer.emit('connection', ws, request)
+        })
+    } else {
+        socket.destroy()
+    }
+})
+
+wsServer.on('connection', function connection(ws, request) {
+    console.log('num of rooms in the Lobby : ' + lobby.rooms.length)
+    console.log('player Connected')
+
+    let playerKey = request.headers['sec-websocket-key']
+    let playerId = lobby.addPlayer(playerKey, ws)
+    let roomId = ''
+
+    console.log(`sending registerEvent to client`)
+    ws.send(new events.RegisterEvent(playerId, playerKey).convertToJSONString())
+
+    ws.on('message', function (msgStr) {
+        jsonObj = JSON.parse(msgStr)
+        switch (jsonObj.type) {
+            case 'JoinOrCreateRoom':
+                console.log('JoinOrCreateRoom Request received from client')
+                roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom)
+                break
+            case 'GetRooms':
+                console.log('GetRooms Request received from client')
+                var connection = lobby.getPlayerConnection(playerId)
+                connection.send(new events.RoomsListEvent(lobby.rooms).convertToJSONString())
+                break
+            case 'GetAvailableRooms':
+                console.log('GetAvailableRooms Request received from client')
+                var connection = lobby.getPlayerConnection(playerId)
+                connection.send(new events.AvailableRoomsListEvent(lobby.availableRooms).convertToJSONString())
+                break
+            case 'CreateRoom':
+                console.log('CreateRoom Request received from client %o', jsonObj)
+                roomId = util.createRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom)
+                break
+            case 'JoinRoom':
+                console.log('JoinRoom Request received from client %o', jsonObj)
+                roomId = util.joinRoom(lobby, jsonObj.roomId, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar)
+                break
+            case 'ExitRoom':
+                console.log('ExitRoom Request received from client %o', jsonObj)
+                roomId = util.exitRoom(lobby, jsonObj.roomId, jsonObj.playerId)
+                break
+            case 'GamePlayEvent':
+                var room = lobby.getRoomById(jsonObj.roomId)
+                if (room !== undefined) {
+                    room.broadcastGamePlayEvent(lobby, jsonObj)
+                }
+                break
+            default:
+                console.log('Unknown msg Received from client with type ' + jsonObj.type)
+                break
+        }
+    })
+
+    ws.on('error', (err) => {
+        console.log(`WebSocket Server error : ${err}`)
+    })
+
+    ws.on('close', function (code) {
+        console.log(`client closed ,close code:  ${code}`)
+        console.log(`member left, member uuid : ${playerId}, roomId : ${roomId}`)
+        // remove member from room
+        var room = lobby.getRoomById(roomId)
+        if (room === undefined) {
+            return
+        }
+        room.removePlayer(playerId)
+        // remove player connection 
+        lobby.removePlayer(playerId)
+        // delete room if empty
+        if (room.isEmpty()) {
+            lobby.removeRoom(roomId)
+            return
+        }
+        // if room is not empty, notify other roomMembers that a player left
+        room.broadcastGameFlowEvent(lobby, new events.RoomMemberLeftEvent(playerId))
+        return
+    })
+})
+
+udpServer.on('error', (err) => {
+    console.log(`UDP server error:\n${err.stack}`)
+    udpServer.close()
+})
+
+udpServer.on('message', (gameplayEventBinary, senderInfo) => {
+    udpClient = new UDPClient(senderInfo.address, senderInfo.port)
+    var gameplayEventJSON = JSON.parse(gameplayEventBinary)
+    if (!lobby.udpConnectionExists(udpClient)) {
+        lobby.udpConnections[JSON.stringify(udpClient)] = true
+        lobby.updateRoomUDPClientsMap(gameplayEventJSON.roomId, udpClient)
+    }
+    var gameplayEventBuffer = new Buffer.from(gameplayEventBinary)
+    udpClients = lobby.udpConnectionsPerRoom[gameplayEvent.roomId]
+    udpClients.forEach(udpClient => {
+        udpServer.send(gameplayEventBuffer, 0, gameplayEventBuffer.length, udpClient.port, udpClient.address)
+    })
+})
+
+udpServer.on('listening', () => {
+    const udp_address = udpServer.address()
+    console.log(`UDP server listening on  ${udp_address.address}:${udp_address.port}`)
+})
+
+udpServer.bind(5000)
+
+server.listen(3000, () => {
+    const address = server.address()
+    console.log(`WebSocket is listening on ${address.address}:${address.port}`)
+})
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></li><li><a href="module-server.html">server</a></li></ul><h3>Classes</h3><ul><li><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></li><li><a href="Event.html">Event</a></li><li><a href="GamePlayEvent.html">GamePlayEvent</a></li><li><a href="GameStartEvent.html">GameStartEvent</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="NotificationEvent.html">NotificationEvent</a></li><li><a href="Player.html">Player</a></li><li><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></li><li><a href="RegisterEvent.html">RegisterEvent</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></li><li><a href="RoomJoinEvent.html">RoomJoinEvent</a></li><li><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></li><li><a href="RoomsListEvent.html">RoomsListEvent</a></li><li><a href="UDPClient.html">UDPClient</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 13 2020 13:41:56 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/Events.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/Events.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Class representing an Event.
+ * 
+ */
+class Event {
+    /**
+     * @constructor
+     * @param  {string} type
+     */
+    constructor(type) {
+        this.type = type
+    }
+    convertToJSONString() {
+        return JSON.stringify(this)
+    }
+}
+/**
+ * Class representing a Game Start Event, A game start event is sent once the number of room members reaches the maximum players per room.
+ * @extends Event
+ */
+class GameStartEvent extends Event {
+    /**
+     * @constructor
+     * @param  {Room} room a Room Object contains the room members along with the UDP Ports assigned to each player by the server
+     */
+    constructor(room) {
+        super()
+        this.type = 'gameStart'
+        this.room = room
+    }
+}
+
+/**
+ * Class representing a Room Join Event, RoomJoinEvent is sent from the server to the player once a JoinRoom request succeed
+ * @extends Event
+ */
+class RoomJoinEvent extends Event {
+    /**
+     * @constructor
+     * @param  {Room} room a Room Object contains the updated list of the room members
+     */
+    constructor(room) {
+        super()
+        this.type = 'roomJoin'
+        this.room = room
+    }
+}
+
+/**
+ * Class representing a Room Created Event, RoomCreatedEvent is sent from the server to the player once a CreateRoom request succeed
+ * @extends Event
+ */
+class RoomCreatedEvent extends Event {
+    /**
+     * @constructor
+     * @param  {Room} room a Room Object contains the updated list of the room members
+     */
+    constructor(room) {
+        super()
+        this.type = 'roomCreated'
+        this.room = room
+    }
+}
+
+/**
+ * Class representing a RoomMember Left Event, RoomMemberLeftEvent is sent from the server to the room members once a room member leaves the room
+ * @extends Event
+ */
+class RoomMemberLeftEvent extends Event {
+    /**
+     * @constructor
+     * @param  {string} idOfPlayerLeft id of the player who left the room
+     */
+    constructor(idOfPlayerLeft) {
+        super()
+        this.type = 'memberLeft'
+        this.idOfPlayerLeft = idOfPlayerLeft
+    }
+}
+
+/**
+ * Class representing a the list of available rooms on the lobby, This is the response of EdgeManager.GetAvailableRooms()
+ * @extends Event
+ */
+class AvailableRoomsListEvent extends Event {
+    /**
+     * @constructor
+     * @param  {Array.&lt;Room>} availableRooms list of available rooms on the lobby, an available room is a room which its roomMembers.length &lt; maxPlayersPerRoom
+     */
+    constructor(availableRooms) {
+        super()
+        this.type = 'availableRoomsList'
+        this.availableRooms = availableRooms
+    }
+}
+
+/**
+ * Class representing a Notification Event sent from the server, there are some standard notifications (create-room-faliure, join-room-faliure, new-room-created-in-lobby)
+ * 
+ * @extends Event
+ */
+class NotificationEvent extends Event {
+    /**
+     * @constructor
+     * @param  {string} notificationText
+     */
+    constructor(notificationText) {
+        super()
+        this.type = 'notification'
+        this.notificationText = notificationText
+    }
+}
+/**
+ * Class representing a Register Event sent from the server, Register Event is when the player establish its connection with the server and the player is assigned a player id and session id
+ * 
+ * @extends Event
+ */
+class RegisterEvent extends Event {
+    /**
+     * @constructor
+     * @param  {string} playerId
+     * @param  {string} sessionId
+     */
+    constructor(playerId, sessionId) {
+        super()
+        this.type = 'register'
+        this.sessionId = sessionId
+        this.playerId = playerId
+    }
+}
+/**
+ * Class representing a Player Joined Room Event from the server, PlayerJoinedRoom Event is sent by the server to room members once a new player join their room
+ * 
+ * @extends Event
+ */
+class PlayerJoinedRoomEvent extends Event {
+    /**
+     * @constructor
+     * @param  {Room} room a Room Object contains the updated list of the room members
+     */
+    constructor(room) {
+        super()
+        this.type = 'playerJoinedRoom'
+        this.room = room
+    }
+}
+
+/**
+ * Class representing a the list of rooms on the lobby, This is the response of EdgeManager.GetRooms()
+ * @extends Event
+ */
+class RoomsListEvent extends Event {
+    /**
+     * @constructor
+     * @param  {Array.&lt;Room>} rooms list of rooms on the lobby
+     */
+    constructor(rooms) {
+        super()
+        this.type = 'roomsList'
+        this.rooms = rooms
+    }
+}
+
+/**
+ * Class representing GamePlayEvent, GamePlay Events are the wrapper for data transferred between players over the websocket and the udp server
+ * @extends Event
+ */
+class GamePlayEvent extends Event {
+    /**
+     * @constructor
+     * @param  {string} roomId
+     * @param  {string} senderId
+     * @param  {string} eventName=''
+     * @param  {Array.&lt;string>} stringData=[]
+     * @param  {Array.&lt;number>} integerData=[]
+     * @param  {Array.&lt;number>} floatData=[]
+     * @param  {Array.&lt;boolean>} booleanData=[]
+     */
+    constructor(roomId, senderId, eventName = '', stringData = [], integerData = [], floatData = [], booleanData = []) {
+        super()
+        this.type = 'GamePlayEvent'
+        this.senderId = senderId
+        this.roomId = roomId
+        this.eventName = eventName
+        this.stringData = stringData
+        this.integerData = integerData
+        this.floatData = floatData
+        this.booleanData = booleanData
+    }
+}
+module.exports.Events= {
+    RegisterEvent,
+    RoomCreatedEvent,
+    RoomJoinEvent,
+    RoomCreatedEvent,
+    GameStartEvent,
+    RoomsListEvent,
+    GamePlayEvent,
+    PlayerJoinedRoomEvent,
+    NotificationEvent,
+    AvailableRoomsListEvent,
+    RoomMemberLeftEvent
+  }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></li><li><a href="module-server.html">server</a></li></ul><h3>Classes</h3><ul><li><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></li><li><a href="Event.html">Event</a></li><li><a href="GamePlayEvent.html">GamePlayEvent</a></li><li><a href="GameStartEvent.html">GameStartEvent</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="NotificationEvent.html">NotificationEvent</a></li><li><a href="Player.html">Player</a></li><li><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></li><li><a href="RegisterEvent.html">RegisterEvent</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></li><li><a href="RoomJoinEvent.html">RoomJoinEvent</a></li><li><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></li><li><a href="RoomsListEvent.html">RoomsListEvent</a></li><li><a href="UDPClient.html">UDPClient</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 13 2020 13:41:56 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

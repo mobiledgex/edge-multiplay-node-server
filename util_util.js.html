@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: util/util.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: util/util.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Room = require('../models/Room').Room
+const Player = require('../models/Player').Player
+const events = require('../models/Events').Events
+/**
+* @module MatchMakingFunctions
+*/
+
+
+/**
+ * @function
+ * @param  {Lobby} lobby
+ * @param  {string} playerId
+ * @param  {string} playerName
+ * @param  {number} playerAvatar
+ * @param  {number} maxPlayersPerRoom
+ */
+function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom) {
+    if (lobby.availableRooms.length === 0) {
+        return createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom)
+    } else {
+        return joinRoom(lobby, lobby.availableRooms[0].roomId, playerId, playerName, playerAvatar)
+    }
+}
+/**
+ * @function
+ * @param  {Lobby} lobby
+ * @param  {string} playerId
+ * @param  {string} playerName
+ * @param  {number} playerAvatar
+ * @param  {number} maxPlayersPerRoom
+ */
+function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom) {
+    var connection = lobby.getPlayerConnection(playerId)
+    if (lobby.rooms.length === lobby.MAX_ROOMS_PER_LOBBY) {
+        connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
+        console.log('Lobby reached maximum rooms threshold, Create room request failed')
+        return undefined
+    }
+    var newRoom = new Room(lobby.rooms.length, [], maxPlayersPerRoom)
+    newRoom.addPlayer(new Player(playerId, playerName, playerAvatar, 0))
+    lobby.addRoom(newRoom)
+    var roomCreatedEvent = new events.RoomCreatedEvent(newRoom)
+    connection.send(roomCreatedEvent.convertToJSONString())
+    var NotificationEvent = new events.NotificationEvent('new-room-created-in-lobby')
+    lobby.notifyLobbyMembers(NotificationEvent)
+    roomId = newRoom.roomId
+    return roomId
+}
+
+
+/**
+ * @function
+ * @param  {Lobby} lobby
+ * @param  {string} roomId
+ * @param  {string} playerId
+ * @param  {string} playerName
+ * @param  {number} playerAvatar
+ */
+function joinRoom(lobby, roomId, playerId, playerName, playerAvatar) {
+    var connection = lobby.getPlayerConnection(playerId)
+    if (lobby.availableRooms.length === 0) {
+        connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
+        return undefined
+    }
+    var room = lobby.getRoomById(roomId)
+    if (room === undefined) {
+        console.log('Room not found, Failing the Join request')
+        connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
+        return undefined
+    }
+    if (room.isFull()) {
+        console.log('Room is full, Failing the Join request')
+        connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
+        return undefined
+    }
+    var newPlayer = new Player(playerId, playerName, playerAvatar, room.roomMembers.length)
+    room.addPlayer(newPlayer)
+    console.log('Member Joined Room')
+    connection.send(new events.RoomJoinEvent(room).convertToJSONString())
+    var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room)
+    room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId)
+    if (room.isFull()) {
+        room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room))
+        lobby.markRoomAsFull(room)
+    }
+    return roomId
+}
+/**
+ *  @function
+ * @param  {Lobby} lobby
+ * @param  {string} roomId
+ * @param  {string} playerId
+ */
+function exitRoom(lobby, roomId, playerId) {
+    var room = lobby.getRoomById(roomId)
+    room.removePlayer(playerId)
+    if (room.isEmpty()) {
+        lobby.removeRoom(roomId)
+        return undefined
+    }
+    //Notify the player that they left the room
+    var connection = lobby.getPlayerConnection(playerId)
+    connection.send(new events.NotificationEvent('left-room').convertToJSONString())
+
+    //Notify remaining room members that a player left the room
+    room.broadcastGameFlowEvent(lobby, new events.MemberLeftEvent(playerId))
+    return undefined
+}
+
+module.exports.util = {
+
+    joinOrCreateRoom,
+    createRoom,
+    joinRoom,
+    exitRoom
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></li><li><a href="module-server.html">server</a></li></ul><h3>Classes</h3><ul><li><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></li><li><a href="Event.html">Event</a></li><li><a href="GamePlayEvent.html">GamePlayEvent</a></li><li><a href="GameStartEvent.html">GameStartEvent</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="NotificationEvent.html">NotificationEvent</a></li><li><a href="Player.html">Player</a></li><li><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></li><li><a href="RegisterEvent.html">RegisterEvent</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></li><li><a href="RoomJoinEvent.html">RoomJoinEvent</a></li><li><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></li><li><a href="RoomsListEvent.html">RoomsListEvent</a></li><li><a href="UDPClient.html">UDPClient</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 13 2020 13:41:56 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
