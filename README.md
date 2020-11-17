@@ -7,7 +7,7 @@ Checkout the server documentation [here](https://mobiledgex.github.io/edge-mutip
 
 ## Prequesites
 
-- **MobiledgeX Unity SDK**
+- **[MobiledgeX Unity SDK](https://github.com/mobiledgex/edge-cloud-sdk-unity)**
 - **EdgeMultiplay Unity Client**
 
 
@@ -19,6 +19,10 @@ Checkout the server documentation [here](https://mobiledgex.github.io/edge-mutip
 
 - Clone the repo.
 - In your command line run ``` npm start ``` the server should be running on your local host.
+
+On the Unity Client change the following:
+
+
 - In EdgeManager check Use Local Host Server
 - Specify the Host IP Address
 
@@ -34,9 +38,17 @@ APP_VERS ?= Your Application Version
 ```
 
 - then in the command line  run this command ``` make ```
+
 This should add your server's docker image  to MobiledgeX registery and MobiledgeX docker hub
 
 - Create an app using the docker image and spawn your app instance on MobiledgeX Console
-  Checkout this video on how to deploy your server on MobiledgeX Console https://www.youtube.com/watch?v=YorMXIi4J9c
+  
+  
+  For more info on how to define your Application on MobiledgeX Console, check https://www.youtube.com/watch?v=YorMXIi4J9c
+  
+On the Unity Client change the following:
+
+- In Unity Editor, Click MobiledgeX/Setup
+- Set your Organization Name, Application Name, Application Version and click Setup
 
 
