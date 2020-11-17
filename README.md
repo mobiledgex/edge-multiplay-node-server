@@ -26,6 +26,9 @@ On the Unity Client change the following:
 - In EdgeManager check Use Local Host Server
 - Specify the Host IP Address
 
+<img src="img/LocalHostServer.png" width="500" height="250">
+
+
 #### For Deploying your server to MobiledgeX Console
 
 - In the Makedefs file, set the following parameters
@@ -50,5 +53,5 @@ On the Unity Client change the following:
 
 - In Unity Editor, Click MobiledgeX/Setup
 - Set your Organization Name, Application Name, Application Version and click Setup
-
+<img src="img/ClientSetup.png" width="300" height="320">
 
