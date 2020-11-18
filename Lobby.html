@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Lobby</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lobby - Documentation</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Class: Lobby</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Event.html">Event</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GamePlayEvent.html">GamePlayEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameStartEvent.html">GameStartEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Lobby.html">Lobby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#addRoom">addRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#getPlayerConnection">getPlayerConnection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#getRoomById">getRoomById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#markRoomAsFull">markRoomAsFull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#notifyLobbyMembers">notifyLobbyMembers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#removePlayer">removePlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#removeRoom">removeRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#udpConnectionExists">udpConnectionExists</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#updateRoomUDPClientsMap">updateRoomUDPClientsMap</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NotificationEvent.html">NotificationEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Player.html">Player</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#setPlayerUDPPort">setPlayerUDPPort</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RegisterEvent.html">RegisterEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Room.html">Room</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#broadcastGameFlowEvent">broadcastGameFlowEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#broadcastGamePlayEvent">broadcastGamePlayEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#removePlayer">removePlayer</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomJoinEvent.html">RoomJoinEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomsListEvent.html">RoomsListEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="UDPClient.html">UDPClient</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~createRoom">createRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~exitRoom">exitRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~joinOrCreateRoom">joinOrCreateRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~joinRoom">joinRoom</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-server.html">server</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Lobby</h1>
+    
 
     
 
@@ -28,10 +41,13 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Lobby<span class="signature">(MAX_ROOMS_PER_LOBBY)</span><span class="type-signature"></span></h2>
+        <h2>
+        Lobby
+        </h2>
         
             <div class="class-description"><p>Class representing a Lobby.
-A Lobby is where all the rooms and the players' connections are stored</p></div>
+A Lobby is where all the rooms and the players' connections are stored
+Think of a Lobby as the place where all the players hangout before they are matched to a room</p></div>
         
     
 </header>
@@ -40,18 +56,61 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     <div class="container-overview">
     
         
+<div class="section-method">
 
     
     <h2>Constructor</h2>
     
 
-    
     <h4 class="name" id="Lobby"><span class="type-signature"></span>new Lobby<span class="signature">(MAX_ROOMS_PER_LOBBY)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -92,7 +151,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><code>integer</code></span>
 
 
             
@@ -102,12 +161,60 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"><p>maximum rooms per lobby based on the number of rooms members per room &amp; the app instance flavor (server performance)</p></td>
+            <td class="description last">
+                <p>maximum rooms per lobby based on the number of rooms members per room &amp; the app instance flavor (server performance)</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="addPlayer"><span class="type-signature"></span>addPlayer<span class="signature">(playerKey, connection)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -143,7 +250,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line7">line 7</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -153,58 +260,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="addPlayer"><span class="type-signature"></span>addPlayer<span class="signature">(playerKey, connection)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -245,7 +300,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -255,7 +310,10 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>unique identifier of the session using the |Sec-WebSocket-Key| header</p>
+                
+            </td>
         </tr>
 
     
@@ -268,7 +326,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">ws</span>
+<span class="param-type"><code>ws</code></span>
 
 
             
@@ -278,12 +336,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>websocket connection</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="addRoom"><span class="type-signature"></span>addRoom<span class="signature">(room)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -319,7 +407,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line26">line 26</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -329,38 +417,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="addRoom"><span class="type-signature"></span>addRoom<span class="signature">(room)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -401,7 +457,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type"><a href="Room.html">Room</a></span>
+<span class="param-type"><code><a href="Room.html">Room</a></code></span>
 
 
             
@@ -411,12 +467,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>room object, representing the room to be added</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="getPlayerConnection"><span class="type-signature"></span>getPlayerConnection<span class="signature">(playerId)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -452,7 +538,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line43">line 43</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -462,38 +548,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getPlayerConnection"><span class="type-signature"></span>getPlayerConnection<span class="signature">(playerId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -534,7 +588,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -544,12 +598,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>unique player id assigned once the connection is established using uuid package</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="getRoomById"><span class="type-signature"></span>getRoomById<span class="signature">(roomId)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -585,7 +669,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line80">line 80</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line90">line 90</a>
     </li></ul></dd>
     
 
@@ -595,38 +679,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getRoomById"><span class="type-signature"></span>getRoomById<span class="signature">(roomId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -667,7 +719,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -677,12 +729,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>the unique room id of the room</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="markRoomAsFull"><span class="type-signature"></span>markRoomAsFull<span class="signature">(room)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -718,7 +800,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line88">line 88</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line109">line 109</a>
     </li></ul></dd>
     
 
@@ -728,38 +810,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="markRoomAsFull"><span class="type-signature"></span>markRoomAsFull<span class="signature">(room)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -800,7 +850,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type"><a href="Room.html">Room</a></span>
+<span class="param-type"><code><a href="Room.html">Room</a></code></span>
 
 
             
@@ -810,12 +860,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>room object, representing the room to be marked full</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="notifyLobbyMembers"><span class="type-signature"></span>notifyLobbyMembers<span class="signature">(Event)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -851,7 +931,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line107">line 107</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -861,38 +941,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="notifyLobbyMembers"><span class="type-signature"></span>notifyLobbyMembers<span class="signature">(Event)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -933,7 +981,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type"><a href="Event.html">Event</a></span>
+<span class="param-type"><code><a href="Event.html">Event</a></code></span>
 
 
             
@@ -943,12 +991,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>event object, representing the event to be sent to Lobby members</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="removePlayer"><span class="type-signature"></span>removePlayer<span class="signature">(playerId)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -984,7 +1062,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line70">line 70</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -994,38 +1072,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="removePlayer"><span class="type-signature"></span>removePlayer<span class="signature">(playerId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -1066,7 +1112,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -1076,7 +1122,10 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>unique player id assigned once the connection is established using uuid package</p>
+                
+            </td>
         </tr>
 
     
@@ -1088,45 +1137,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line35">line 35</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1137,28 +1147,62 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 
 
-
-
-
-
-
-
-
-
-
-
+</div>
         
             
+<div class="section-method">
 
     
 
-    
     <h4 class="name" id="removeRoom"><span class="type-signature"></span>removeRoom<span class="signature">(roomId)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line52">line 52</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -1199,7 +1243,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -1209,7 +1253,10 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>the unique room id of the room to be removed</p>
+                
+            </td>
         </tr>
 
     
@@ -1221,45 +1268,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line50">line 50</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1270,28 +1278,62 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 
 
-
-
-
-
-
-
-
-
-
-
+</div>
         
             
+<div class="section-method">
 
     
 
-    
     <h4 class="name" id="udpConnectionExists"><span class="type-signature"></span>udpConnectionExists<span class="signature">(udpClient)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line120">line 120</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -1332,7 +1374,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type"><a href="UDPClient.html">UDPClient</a></span>
+<span class="param-type"><code><a href="UDPClient.html">UDPClient</a></code></span>
 
 
             
@@ -1342,12 +1384,42 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>UDPClient object</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="updateRoomUDPClientsMap"><span class="type-signature"></span>updateRoomUDPClientsMap<span class="signature">(roomId, udpClient)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -1383,7 +1455,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line118">line 118</a>
+        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -1393,38 +1465,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="updateRoomUDPClientsMap"><span class="type-signature"></span>updateRoomUDPClientsMap<span class="signature">(roomId, udpClient)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -1465,7 +1505,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -1475,7 +1515,10 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>the unique room id of the room</p>
+                
+            </td>
         </tr>
 
     
@@ -1488,7 +1531,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
             <td class="type">
             
                 
-<span class="param-type"><a href="UDPClient.html">UDPClient</a></span>
+<span class="param-type"><code><a href="UDPClient.html">UDPClient</a></code></span>
 
 
             
@@ -1498,7 +1541,10 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>UDPClient Object, representing the udp connection to be added to the udpClientsMap</p>
+                
+            </td>
         </tr>
 
     
@@ -1510,45 +1556,6 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Lobby.js.html">models/Lobby.js</a>, <a href="models_Lobby.js.html#line95">line 95</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1559,16 +1566,7 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 
 
-
-
-
-
-
-
-
-
-
-
+</div>
         
     
 
@@ -1584,17 +1582,13 @@ A Lobby is where all the rooms and the players' connections are stored</p></div>
 
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></li><li><a href="module-server.html">server</a></li></ul><h3>Classes</h3><ul><li><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></li><li><a href="Event.html">Event</a></li><li><a href="GamePlayEvent.html">GamePlayEvent</a></li><li><a href="GameStartEvent.html">GameStartEvent</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="NotificationEvent.html">NotificationEvent</a></li><li><a href="Player.html">Player</a></li><li><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></li><li><a href="RegisterEvent.html">RegisterEvent</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></li><li><a href="RoomJoinEvent.html">RoomJoinEvent</a></li><li><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></li><li><a href="RoomsListEvent.html">RoomsListEvent</a></li><li><a href="UDPClient.html">UDPClient</a></li></ul>
-</nav>
-
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 13 2020 13:41:56 GMT-0800 (Pacific Standard Time)
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Tue Nov 17 2020 17:23:48 GMT-0800 (Pacific Standard Time) using the Minami theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
 </body>
 </html>

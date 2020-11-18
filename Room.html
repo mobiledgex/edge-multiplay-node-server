@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Room</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Room - Documentation</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Class: Room</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Event.html">Event</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GamePlayEvent.html">GamePlayEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameStartEvent.html">GameStartEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Lobby.html">Lobby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#addRoom">addRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#getPlayerConnection">getPlayerConnection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#getRoomById">getRoomById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#markRoomAsFull">markRoomAsFull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#notifyLobbyMembers">notifyLobbyMembers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#removePlayer">removePlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#removeRoom">removeRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#udpConnectionExists">udpConnectionExists</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#updateRoomUDPClientsMap">updateRoomUDPClientsMap</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NotificationEvent.html">NotificationEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Player.html">Player</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#setPlayerUDPPort">setPlayerUDPPort</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RegisterEvent.html">RegisterEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Room.html">Room</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#broadcastGameFlowEvent">broadcastGameFlowEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#broadcastGamePlayEvent">broadcastGamePlayEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#removePlayer">removePlayer</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomJoinEvent.html">RoomJoinEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomsListEvent.html">RoomsListEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="UDPClient.html">UDPClient</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~createRoom">createRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~exitRoom">exitRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~joinOrCreateRoom">joinOrCreateRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~joinRoom">joinRoom</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-server.html">server</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Room</h1>
+    
 
     
 
@@ -28,9 +41,12 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Room<span class="signature">(roomId, roomMembers, maxPlayersPerRoom)</span><span class="type-signature"></span></h2>
+        <h2>
+        Room
+        </h2>
         
-            <div class="class-description"><p>Class representing a Room.</p></div>
+            <div class="class-description"><p>Class representing a Room
+A room is where the players are grouped together once the game starts players in the room can start forwarding messages between eachother</p></div>
         
     
 </header>
@@ -39,18 +55,61 @@
     <div class="container-overview">
     
         
+<div class="section-method">
 
     
     <h2>Constructor</h2>
     
 
-    
     <h4 class="name" id="Room"><span class="type-signature"></span>new Room<span class="signature">(roomId, roomMembers, maxPlayersPerRoom)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -91,7 +150,7 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -101,7 +160,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>unique room id assigned on room creation, the id is generated using uuid() module</p>
+                
+            </td>
         </tr>
 
     
@@ -114,7 +176,7 @@
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;<a href="Player.html">Player</a>></span>
+<span class="param-type"><code>Array.&lt;<a href="Player.html">Player</a>></code></span>
 
 
             
@@ -124,7 +186,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>array of players in the room</p>
+                
+            </td>
         </tr>
 
     
@@ -137,7 +202,7 @@
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><code>integer</code></span>
 
 
             
@@ -147,12 +212,60 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>maximum players per room, must be greater than 1</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="addPlayer"><span class="type-signature"></span>addPlayer<span class="signature">(player)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -188,7 +301,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line7">line 7</a>
+        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -198,58 +311,6 @@
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="addPlayer"><span class="type-signature"></span>addPlayer<span class="signature">(player)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -290,7 +351,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Player.html">Player</a></span>
+<span class="param-type"><code><a href="Player.html">Player</a></code></span>
 
 
             
@@ -300,12 +361,42 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>Player object, representing the player to be added to the room</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="broadcastGameFlowEvent"><span class="type-signature"></span>broadcastGameFlowEvent<span class="signature">(Lobby, Event, senderId)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -341,7 +432,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line23">line 23</a>
+        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -351,38 +442,6 @@
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="broadcastGameFlowEvent"><span class="type-signature"></span>broadcastGameFlowEvent<span class="signature">(Lobby, Event, senderId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -423,7 +482,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Lobby.html">Lobby</a></span>
+<span class="param-type"><code><a href="Lobby.html">Lobby</a></code></span>
 
 
             
@@ -433,7 +492,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>Lobby object, A Lobby is where all the rooms and the players' connections are stored , Think of a Lobby as the place where all the players hangout before they are matched to a room</p>
+                
+            </td>
         </tr>
 
     
@@ -446,7 +508,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Event.html">Event</a></span>
+<span class="param-type"><code><a href="Event.html">Event</a></code></span>
 
 
             
@@ -456,7 +518,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>Event object, representing the event to be broadcasted from the sender to the sender's room</p>
+                
+            </td>
         </tr>
 
     
@@ -469,7 +534,7 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -479,12 +544,42 @@
 
             
 
-            <td class="description last"><p>the playerId of the sender</p></td>
+            <td class="description last">
+                <p>the playerId of the sender, a playerId is a unique player id assigned once the connection is established using uuid package</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="broadcastGamePlayEvent"><span class="type-signature"></span>broadcastGamePlayEvent<span class="signature">(Lobby, gamePlayEvent, senderId)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -520,7 +615,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line49">line 49</a>
+        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -530,38 +625,6 @@
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="broadcastGamePlayEvent"><span class="type-signature"></span>broadcastGamePlayEvent<span class="signature">(Lobby, gamePlayEvent, senderId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -602,7 +665,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Lobby.html">Lobby</a></span>
+<span class="param-type"><code><a href="Lobby.html">Lobby</a></code></span>
 
 
             
@@ -612,7 +675,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>Lobby object, A Lobby is where all the rooms and the players' connections are stored , Think of a Lobby as the place where all the players hangout before they are matched to a room</p>
+                
+            </td>
         </tr>
 
     
@@ -625,7 +691,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="GamePlayEvent.html">GamePlayEvent</a></span>
+<span class="param-type"><code><a href="GamePlayEvent.html">GamePlayEvent</a></code></span>
 
 
             
@@ -635,7 +701,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>GamePlayEvent object, representing the gamePlayEvent to be broadcasted from the sender to the sender's room</p>
+                
+            </td>
         </tr>
 
     
@@ -648,7 +717,7 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -658,12 +727,42 @@
 
             
 
-            <td class="description last"><p>the playerId of the sender</p></td>
+            <td class="description last">
+                <p>the playerId of the sender, a playerId is a unique player id assigned once the connection is established using uuid package</p>
+                
+            </td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="removePlayer"><span class="type-signature"></span>removePlayer<span class="signature">(playerId)</span><span class="type-signature"></span></h4>
+
+    
+
 
 
 
@@ -699,7 +798,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line75">line 75</a>
+        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -709,38 +808,6 @@
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="removePlayer"><span class="type-signature"></span>removePlayer<span class="signature">(playerId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
 
 
 
@@ -781,7 +848,7 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><code>string</code></span>
 
 
             
@@ -791,7 +858,10 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">
+                <p>unique player id assigned once the connection is established using uuid package</p>
+                
+            </td>
         </tr>
 
     
@@ -803,45 +873,6 @@
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_Room.js.html">models/Room.js</a>, <a href="models_Room.js.html#line31">line 31</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -852,16 +883,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
+</div>
         
     
 
@@ -877,17 +899,13 @@
 
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></li><li><a href="module-server.html">server</a></li></ul><h3>Classes</h3><ul><li><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></li><li><a href="Event.html">Event</a></li><li><a href="GamePlayEvent.html">GamePlayEvent</a></li><li><a href="GameStartEvent.html">GameStartEvent</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="NotificationEvent.html">NotificationEvent</a></li><li><a href="Player.html">Player</a></li><li><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></li><li><a href="RegisterEvent.html">RegisterEvent</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></li><li><a href="RoomJoinEvent.html">RoomJoinEvent</a></li><li><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></li><li><a href="RoomsListEvent.html">RoomsListEvent</a></li><li><a href="UDPClient.html">UDPClient</a></li></ul>
-</nav>
-
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 13 2020 13:41:56 GMT-0800 (Pacific Standard Time)
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Tue Nov 17 2020 17:23:48 GMT-0800 (Pacific Standard Time) using the Minami theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
 </body>
 </html>
