@@ -2,35 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>RoomsListEvent - Documentation</title>
+    <title>JSDoc: Class: RoomsListEvent</title>
 
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
+
 <body>
 
-<input type="checkbox" id="nav-trigger" class="nav-trigger" />
-<label for="nav-trigger" class="navicon-button x">
-  <div class="navicon"></div>
-</label>
-
-<label for="nav-trigger" class="overlay"></label>
-
-<nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Event.html">Event</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GamePlayEvent.html">GamePlayEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameStartEvent.html">GameStartEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Lobby.html">Lobby</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#addRoom">addRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#getPlayerConnection">getPlayerConnection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#getRoomById">getRoomById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#markRoomAsFull">markRoomAsFull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#notifyLobbyMembers">notifyLobbyMembers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#removePlayer">removePlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#removeRoom">removeRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#udpConnectionExists">udpConnectionExists</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Lobby.html#updateRoomUDPClientsMap">updateRoomUDPClientsMap</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NotificationEvent.html">NotificationEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Player.html">Player</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Player.html#setPlayerUDPPort">setPlayerUDPPort</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RegisterEvent.html">RegisterEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Room.html">Room</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#broadcastGameFlowEvent">broadcastGameFlowEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#broadcastGamePlayEvent">broadcastGamePlayEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Room.html#removePlayer">removePlayer</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomJoinEvent.html">RoomJoinEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="RoomsListEvent.html">RoomsListEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="UDPClient.html">UDPClient</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~createRoom">createRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~exitRoom">exitRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~joinOrCreateRoom">joinOrCreateRoom</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-MatchMakingFunctions.html#~joinRoom">joinRoom</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-server.html">server</a></span></li>
-</nav>
-
 <div id="main">
-    
-    <h1 class="page-title">RoomsListEvent</h1>
-    
+
+    <h1 class="page-title">Class: RoomsListEvent</h1>
 
     
 
@@ -41,9 +28,7 @@
 
 <header>
     
-        <h2>
-        RoomsListEvent
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>RoomsListEvent<span class="signature">(rooms)</span><span class="type-signature"></span></h2>
         
             <div class="class-description"><p>Class representing a the list of rooms on the lobby, This is the response of EdgeManager.GetRooms()</p></div>
         
@@ -54,16 +39,74 @@
     <div class="container-overview">
     
         
-<div class="section-method">
 
     
     <h2>Constructor</h2>
     
 
+    
     <h4 class="name" id="RoomsListEvent"><span class="type-signature"></span>new RoomsListEvent<span class="signature">(rooms)</span><span class="type-signature"></span></h4>
+    
 
     
 
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rooms</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="Room.html">Room</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>list of rooms on the lobby</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -118,56 +161,6 @@
 
 
 
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>rooms</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Array.&lt;<a href="Room.html">Room</a>></code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>list of rooms on the lobby</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -179,12 +172,6 @@
 
 
 
-
-
-
-
-
-</div>
     
     </div>
 
@@ -205,7 +192,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -225,13 +214,17 @@
 
 </div>
 
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MatchMakingFunctions.html">MatchMakingFunctions</a></li><li><a href="module-server.html">server</a></li></ul><h3>Classes</h3><ul><li><a href="AvailableRoomsListEvent.html">AvailableRoomsListEvent</a></li><li><a href="Event.html">Event</a></li><li><a href="GamePlayEvent.html">GamePlayEvent</a></li><li><a href="GameStartEvent.html">GameStartEvent</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="NotificationEvent.html">NotificationEvent</a></li><li><a href="Player.html">Player</a></li><li><a href="PlayerJoinedRoomEvent.html">PlayerJoinedRoomEvent</a></li><li><a href="RegisterEvent.html">RegisterEvent</a></li><li><a href="Room.html">Room</a></li><li><a href="RoomCreatedEvent.html">RoomCreatedEvent</a></li><li><a href="RoomJoinEvent.html">RoomJoinEvent</a></li><li><a href="RoomMemberLeftEvent.html">RoomMemberLeftEvent</a></li><li><a href="RoomsListEvent.html">RoomsListEvent</a></li><li><a href="UDPClient.html">UDPClient</a></li></ul>
+</nav>
+
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Tue Nov 17 2020 17:23:48 GMT-0800 (Pacific Standard Time) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue Nov 17 2020 17:33:12 GMT-0800 (Pacific Standard Time)
 </footer>
 
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>
