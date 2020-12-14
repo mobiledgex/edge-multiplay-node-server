@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 // replace with your app instance fqdn url & the tcp port
-var server = "ws://autoclusteredgemultiplay.vancouver-main.telus.mobiledgex.net:3000";
+var server = "ws://localhost:3000";
 var ws = new WebSocket(server);
 
 ws.onopen = function () {
