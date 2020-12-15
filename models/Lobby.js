@@ -99,7 +99,7 @@ class Lobby {
     }
     /**
      * @param  {string} roomId the unique room id of the room
-     * @param  {Array.<UDPClient>} udpClients array of the UDPClients represeting players in the room
+     * @param  {Array.<UDPClient>} udpClients array of the UDPClients representing players in the room
      */
     updateRoomUDPClientsMap(roomId, udpClients) {
         this.udpConnectionsPerRoom[roomId] = udpClients
