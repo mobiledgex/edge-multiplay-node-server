@@ -12,11 +12,10 @@ class Lobby {
      * @param  {integer} MAX_ROOMS_PER_LOBBY maximum rooms per lobby based on the number of rooms members per room & the app instance flavor (server performance)
      */
     constructor(MAX_ROOMS_PER_LOBBY) {
-        this.MAX_ROOMS_PER_LOBBY= MAX_ROOMS_PER_LOBBY
+        this.MAX_ROOMS_PER_LOBBY = MAX_ROOMS_PER_LOBBY
         this.connectedClients = {}
         this.nameMap = {}
-        this.udpConnections={}
-        this.udpConnectionsPerRoom= {}
+        this.udpConnectionsPerRoom = {}
         this.rooms = []
         this.availableRooms = []
         this.fullRooms = []
@@ -65,6 +64,7 @@ class Lobby {
                 object.splice(index, 1)
             }
         })
+        delete this.udpConnectionsPerRoom[roomId]
     }
     /**
      * @param  {Event} Event event object, representing the event to be sent to Lobby members
@@ -75,6 +75,13 @@ class Lobby {
                 client.send(Event.convertToJSONString())
             }
         })
+    }
+    /**
+     * @param  {string} playerId unique player id assigned once the connection is established using uuid package
+     */
+    getPlayerKey(playerId) {
+        var playerKey = this.nameMap[playerId]
+        return playerKey
     }
     /**
      * @param  {string} playerId unique player id assigned once the connection is established using uuid package
@@ -92,16 +99,10 @@ class Lobby {
     }
     /**
      * @param  {string} roomId the unique room id of the room
-     * @param  {UDPClient} udpClient UDPClient Object, representing the udp connection to be added to the udpClientsMap
+     * @param  {Array.<UDPClient>} udpClients array of the UDPClients representing players in the room
      */
-    updateRoomUDPClientsMap(roomId, udpClient) {
-        
-        if(this.udpConnectionsPerRoom[roomId] === undefined){
-            this.udpConnectionsPerRoom[roomId] = [udpClient]
-        }
-        else{
-            this.udpConnectionsPerRoom[roomId].push(udpClient)
-        }
+    updateRoomUDPClientsMap(roomId, udpClients) {
+        this.udpConnectionsPerRoom[roomId] = udpClients
     }
     /**
      * @param  {Room} room room object, representing the room to be marked full
@@ -110,16 +111,9 @@ class Lobby {
         this.availableRooms.forEach((availableRoom, index, object) => {
             if (availableRoom.roomId === room.roomId) {
                 object.splice(index, 1)
-            }
+            } 
         })
         this.fullRooms.push(room)
     }
-    /**
-     * @param  {UDPClient} udpClient UDPClient object
-     */
-    udpConnectionExists(udpClient){
-       return this.udpConnections[JSON.stringify(udpClient)] === true
-    }
-    
 }
 module.exports.Lobby = Lobby

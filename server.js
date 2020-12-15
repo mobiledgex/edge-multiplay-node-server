@@ -34,7 +34,6 @@ const wsServer = new WebSocket.Server({ noServer: true })
 const dgram = require('dgram')
 const udpServer = dgram.createSocket('udp4')
 const Lobby = require('./models/Lobby').Lobby
-const UDPClient = require('./models/UDPClient').UDPClient
 const events = require('./models/Events').Events
 const util = require('./util/util').util
 const MAX_ROOMS_PER_LOBBY = 5 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
@@ -56,7 +55,7 @@ wsServer.on('connection', function connection(ws, request) {
     console.log('num of rooms in the Lobby : ' + lobby.rooms.length)
     console.log('player Connected')
 
-    let playerKey = request.headers['sec-websocket-key']
+    let playerKey = request.connection.remoteAddress+'%'+request.headers['sec-websocket-key']
     let playerId = lobby.addPlayer(playerKey, ws)
     let roomId = ''
 
@@ -67,16 +66,16 @@ wsServer.on('connection', function connection(ws, request) {
         jsonObj = JSON.parse(msgStr)
         switch (jsonObj.type) {
             case 'JoinOrCreateRoom':
-                console.log('JoinOrCreateRoom Request received from client')
+                console.log('JoinOrCreateRoom Request received from client %o', jsonObj)
                 roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom)
                 break
             case 'GetRooms':
-                console.log('GetRooms Request received from client')
+                console.log('GetRooms Request received from client %o', jsonObj)
                 var connection = lobby.getPlayerConnection(playerId)
                 connection.send(new events.RoomsListEvent(lobby.rooms).convertToJSONString())
                 break
             case 'GetAvailableRooms':
-                console.log('GetAvailableRooms Request received from client')
+                console.log('GetAvailableRooms Request received from client %o', jsonObj)
                 var connection = lobby.getPlayerConnection(playerId)
                 connection.send(new events.AvailableRoomsListEvent(lobby.availableRooms).convertToJSONString())
                 break
@@ -135,18 +134,17 @@ udpServer.on('error', (err) => {
     udpServer.close()
 })
 
-udpServer.on('message', (gameplayEventBinary, senderInfo) => {
-    udpClient = new UDPClient(senderInfo.address, senderInfo.port)
-    var gameplayEventJSON = JSON.parse(gameplayEventBinary)
-    if (!lobby.udpConnectionExists(udpClient)) {
-        lobby.udpConnections[JSON.stringify(udpClient)] = true
-        lobby.updateRoomUDPClientsMap(gameplayEventJSON.roomId, udpClient)
+udpServer.on('message', (gameplayEventBinary) => {
+    var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
+    var jsonObj = JSON.parse(gameplayEventStr)
+    var udpClients = lobby.udpConnectionsPerRoom[jsonObj.roomId]
+    if (udpClients !== undefined){
+        udpClients.forEach(udpClient => {
+            if (jsonObj.senderId !== udpClient.playerId) {
+                udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+            }
+        })
     }
-    var gameplayEventBuffer = new Buffer.from(gameplayEventBinary)
-    udpClients = lobby.udpConnectionsPerRoom[gameplayEventJSON.roomId]
-    udpClients.forEach(udpClient => {
-        udpServer.send(gameplayEventBuffer, 0, gameplayEventBuffer.length, udpClient.port, udpClient.address)
-    })
 })
 
 udpServer.on('listening', () => {
@@ -160,4 +158,3 @@ server.listen(3000, () => {
     const address = server.address()
     console.log(`WebSocket is listening on ${address.address}:${address.port}`)
 })
-
