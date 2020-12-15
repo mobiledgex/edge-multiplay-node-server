@@ -136,13 +136,11 @@ udpServer.on('error', (err) => {
 
 udpServer.on('message', (gameplayEventBinary) => {
     var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
-    var gameplayEventArray = gameplayEventStr.split('$')
-    var roomId = gameplayEventArray[1]
-    var senderId = gameplayEventArray[2]
-    var udpClients = lobby.udpConnectionsPerRoom[roomId]
+    var jsonObj = JSON.parse(gameplayEventStr)
+    var udpClients = lobby.udpConnectionsPerRoom[jsonObj.roomId]
     if(udpClients !== undefined){
         udpClients.forEach(udpClient => {
-            if (senderId !== udpClient.playerId) {
+            if (jsonObj.senderId !== udpClient.playerId) {
                 udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
             }
         })
