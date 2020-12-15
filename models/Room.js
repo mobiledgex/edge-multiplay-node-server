@@ -22,7 +22,7 @@ class Room {
      */
     addPlayer(player) {
         this.roomMembers.push(player)
-        var udpPort = 5000 + (this.roomIndex*10) + player.playerIndex
+        var udpPort = 10000 + (this.roomIndex*10) + player.playerIndex
         player.setPlayerUDPPort(udpPort)
     }
     /**

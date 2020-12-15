@@ -1,6 +1,8 @@
 const Room = require('../models/Room').Room
 const Player = require('../models/Player').Player
 const events = require('../models/Events').Events
+const UDPClient = require('../models/UDPClient').UDPClient
+
 /**
 * @module MatchMakingFunctions
 */
@@ -30,7 +32,12 @@ function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersP
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
  */
 function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom) {
-    var connection = lobby.getPlayerConnection(playerId)
+    let connection = lobby.getPlayerConnection(playerId)
+    if (connection === undefined){
+        console.log('cannot find player connection')
+        return
+    }
+  
     if (lobby.rooms.length === lobby.MAX_ROOMS_PER_LOBBY) {
         connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
         console.log('Lobby reached maximum rooms threshold, Create room request failed')
@@ -80,8 +87,19 @@ function joinRoom(lobby, roomId, playerId, playerName, playerAvatar) {
     var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room)
     room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId)
     if (room.isFull()) {
-        room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room))
+        var udpClients = []
+        room.roomMembers.forEach(player => {
+            // playerKey is remoteAddress%request.headers['sec-websocket-key']
+            var remoteAddress = lobby.getPlayerKey(player.playerId).split('%')[0]
+            // addressStr is ::fff:IPAddress
+            var addressStr = remoteAddress.split(':')
+            var address = addressStr[addressStr.length-1]
+            var udpClient =  new UDPClient(address, player.udpPort, player.playerId)
+            udpClients.push(udpClient)
+        });
+        lobby.updateRoomUDPClientsMap(room.roomId, udpClients)
         lobby.markRoomAsFull(room)
+        room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room))
     }
     return roomId
 }
@@ -108,7 +126,6 @@ function exitRoom(lobby, roomId, playerId) {
 }
 
 module.exports.util = {
-
     joinOrCreateRoom,
     createRoom,
     joinRoom,
