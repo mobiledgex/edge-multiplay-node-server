@@ -33,7 +33,7 @@ function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersP
  */
 function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom) {
     let connection = lobby.getPlayerConnection(playerId)
-    if(connection === undefined){
+    if (connection === undefined){
         console.log('cannot find player connection')
         return
     }
