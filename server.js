@@ -37,7 +37,7 @@ const Lobby = require('./models/Lobby').Lobby
 const UDPClient = require('./models/UDPClient').UDPClient
 const events = require('./models/Events').Events
 const util = require('./util/util').util
-const MAX_ROOMS_PER_LOBBY = 10 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
+const MAX_ROOMS_PER_LOBBY = 4 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
 let lobby = new Lobby(MAX_ROOMS_PER_LOBBY)
 
 server.on('upgrade', function upgrade(request, socket, head) {
