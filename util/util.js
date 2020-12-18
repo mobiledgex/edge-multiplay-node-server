@@ -87,17 +87,7 @@ function joinRoom(lobby, roomId, playerId, playerName, playerAvatar) {
     var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room)
     room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId)
     if (room.isFull()) {
-        var udpClients = []
-        room.roomMembers.forEach(player => {
-            // playerKey is remoteAddress%request.headers['sec-websocket-key']
-            var remoteAddress = lobby.getPlayerKey(player.playerId).split('%')[0]
-            // addressStr is ::fff:IPAddress
-            var addressStr = remoteAddress.split(':')
-            var address = addressStr[addressStr.length-1]
-            var udpClient =  new UDPClient(address, player.udpPort, player.playerId)
-            udpClients.push(udpClient)
-        });
-        lobby.updateRoomUDPClientsMap(room.roomId, udpClients)
+        lobby.updateRoomUDPClientsMap(room.roomId, [])
         lobby.markRoomAsFull(room)
         room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room))
     }

@@ -76,13 +76,7 @@ class Lobby {
             }
         })
     }
-    /**
-     * @param  {string} playerId unique player id assigned once the connection is established using uuid package
-     */
-    getPlayerKey(playerId) {
-        var playerKey = this.nameMap[playerId]
-        return playerKey
-    }
+    
     /**
      * @param  {string} playerId unique player id assigned once the connection is established using uuid package
      */
