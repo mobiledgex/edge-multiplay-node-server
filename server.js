@@ -34,9 +34,10 @@ const wsServer = new WebSocket.Server({ noServer: true })
 const dgram = require('dgram')
 const udpServer = dgram.createSocket('udp4')
 const Lobby = require('./models/Lobby').Lobby
+const UDPClient = require('./models/UDPClient').UDPClient
 const events = require('./models/Events').Events
 const util = require('./util/util').util
-const MAX_ROOMS_PER_LOBBY = 5 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
+const MAX_ROOMS_PER_LOBBY = 10 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
 let lobby = new Lobby(MAX_ROOMS_PER_LOBBY)
 
 server.on('upgrade', function upgrade(request, socket, head) {
@@ -55,7 +56,7 @@ wsServer.on('connection', function connection(ws, request) {
     console.log('num of rooms in the Lobby : ' + lobby.rooms.length)
     console.log('player Connected')
 
-    let playerKey = request.connection.remoteAddress+'%'+request.headers['sec-websocket-key']
+    let playerKey = request.headers['sec-websocket-key']
     let playerId = lobby.addPlayer(playerKey, ws)
     let roomId = ''
 
@@ -134,13 +135,19 @@ udpServer.on('error', (err) => {
     udpServer.close()
 })
 
-udpServer.on('message', (gameplayEventBinary) => {
+udpServer.on('message', (gameplayEventBinary, senderInfo) => {
     var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
     var jsonObj = JSON.parse(gameplayEventStr)
-    var udpClients = lobby.udpConnectionsPerRoom[jsonObj.roomId]
+    var roomId = jsonObj.roomId
+    var playerId = jsonObj.senderId
+    var client = lobby.udpConnectionsPerRoom[roomId].find(client => client.playerId === playerId)
+    if(client === undefined){
+        lobby.udpConnectionsPerRoom[roomId].push(new UDPClient(senderInfo.address, senderInfo.port, playerId))
+    }
+    var udpClients = lobby.udpConnectionsPerRoom[roomId]
     if (udpClients !== undefined){
         udpClients.forEach(udpClient => {
-            if (jsonObj.senderId !== udpClient.playerId) {
+            if (playerId !== udpClient.playerId) {
                 udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
             }
         })
