@@ -136,21 +136,33 @@ udpServer.on('error', (err) => {
 })
 
 udpServer.on('message', (gameplayEventBinary, senderInfo) => {
-    var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
-    var jsonObj = JSON.parse(gameplayEventStr)
-    var roomId = jsonObj.roomId
-    var playerId = jsonObj.senderId
-    var client = lobby.udpConnectionsPerRoom[roomId].find(client => client.playerId === playerId)
-    if(client === undefined){
-        lobby.udpConnectionsPerRoom[roomId].push(new UDPClient(senderInfo.address, senderInfo.port, playerId))
-    }
-    var udpClients = lobby.udpConnectionsPerRoom[roomId]
-    if (udpClients !== undefined){
-        udpClients.forEach(udpClient => {
-            if (playerId !== udpClient.playerId) {
-                udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+    try {
+        var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
+        var jsonObj = JSON.parse(gameplayEventStr)
+        var roomId = jsonObj.roomId
+        var senderId = jsonObj.senderId
+        var room = lobby.getRoomById(roomId)
+        if (room.udpConnections.get(senderId) !== undefined) {
+            room.udpConnections.forEach(udpClient => {
+                if (senderId !== udpClient.playerId) {
+                    udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+                }
+            })
+        } 
+        else {
+            var player = room.roomMembers.find(player => player.playerId === senderId)
+            if (player !== undefined) {
+                room.udpConnections.set(senderId, new UDPClient(senderInfo.address, senderInfo.port))
+                room.udpConnections.forEach(udpClient => {
+                    if (senderId !== udpClient.playerId) {
+                        udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+                    }
+                })
             }
-        })
+        }
+    }
+    catch (e) {
+        console.log('error parsing gamePlayEvent \n' + e)
     }
 })
 
