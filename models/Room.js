@@ -16,14 +16,13 @@ class Room {
         this.roomId =  uuidv4()
         this.roomMembers = roomMembers
         this.maxPlayersPerRoom = maxPlayersPerRoom
+        this.udpConnections = new Map()
     }
     /**
      * @param  {Player} player Player object, representing the player to be added to the room
      */
     addPlayer(player) {
         this.roomMembers.push(player)
-        var udpPort = 10000 + (this.roomIndex*10) + player.playerIndex
-        player.setPlayerUDPPort(udpPort)
     }
     /**
      * @param  {string} playerId unique player id assigned once the connection is established using uuid package

@@ -87,7 +87,6 @@ function joinRoom(lobby, roomId, playerId, playerName, playerAvatar) {
     var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room)
     room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId)
     if (room.isFull()) {
-        lobby.updateRoomUDPClientsMap(room.roomId, [])
         lobby.markRoomAsFull(room)
         room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room))
     }
