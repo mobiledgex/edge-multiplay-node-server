@@ -3,7 +3,7 @@ EdgeMultiplay is a light game server sample that works with [EdgeMultiplay Unity
 
 ## Documentation
 
-Checkout the server documentation [here](https://mobiledgex.github.io/edge-mutiplay-node-server/index.html)
+Checkout the server documentation [here](https://mobiledgex.github.io/edge-multiplay-node-server/)
 
 ## Prequesites
 
@@ -13,7 +13,7 @@ Checkout the server documentation [here](https://mobiledgex.github.io/edge-mutip
 
 ## Usage
 
-### Get Started Video :  https://www.youtube.com/watch?v=xzrqRzccr5A
+### Get Started Video :  https://www.youtube.com/watch?v=sox3vqhaW3A
 
 #### For Running the server on your machine 
 
