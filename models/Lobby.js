@@ -15,7 +15,6 @@ class Lobby {
         this.MAX_ROOMS_PER_LOBBY = MAX_ROOMS_PER_LOBBY
         this.connectedClients = {}
         this.nameMap = {}
-        this.udpConnectionsPerRoom = {}
         this.rooms = []
         this.availableRooms = []
         this.fullRooms = []
@@ -64,7 +63,6 @@ class Lobby {
                 object.splice(index, 1)
             }
         })
-        delete this.udpConnectionsPerRoom[roomId]
     }
     /**
      * @param  {Event} Event event object, representing the event to be sent to Lobby members
@@ -76,13 +74,7 @@ class Lobby {
             }
         })
     }
-    /**
-     * @param  {string} playerId unique player id assigned once the connection is established using uuid package
-     */
-    getPlayerKey(playerId) {
-        var playerKey = this.nameMap[playerId]
-        return playerKey
-    }
+
     /**
      * @param  {string} playerId unique player id assigned once the connection is established using uuid package
      */
