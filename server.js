@@ -34,9 +34,10 @@ const wsServer = new WebSocket.Server({ noServer: true })
 const dgram = require('dgram')
 const udpServer = dgram.createSocket('udp4')
 const Lobby = require('./models/Lobby').Lobby
+const UDPClient = require('./models/UDPClient').UDPClient
 const events = require('./models/Events').Events
 const util = require('./util/util').util
-const MAX_ROOMS_PER_LOBBY = 5 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
+const MAX_ROOMS_PER_LOBBY = 4 // Change to the desired maximum rooms per lobby based on your number of rooms members per room & the app instance flavor
 let lobby = new Lobby(MAX_ROOMS_PER_LOBBY)
 
 server.on('upgrade', function upgrade(request, socket, head) {
@@ -55,7 +56,7 @@ wsServer.on('connection', function connection(ws, request) {
     console.log('num of rooms in the Lobby : ' + lobby.rooms.length)
     console.log('player Connected')
 
-    let playerKey = request.connection.remoteAddress+'%'+request.headers['sec-websocket-key']
+    let playerKey = request.headers['sec-websocket-key']
     let playerId = lobby.addPlayer(playerKey, ws)
     let roomId = ''
 
@@ -134,16 +135,34 @@ udpServer.on('error', (err) => {
     udpServer.close()
 })
 
-udpServer.on('message', (gameplayEventBinary) => {
-    var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
-    var jsonObj = JSON.parse(gameplayEventStr)
-    var udpClients = lobby.udpConnectionsPerRoom[jsonObj.roomId]
-    if (udpClients !== undefined){
-        udpClients.forEach(udpClient => {
-            if (jsonObj.senderId !== udpClient.playerId) {
-                udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+udpServer.on('message', (gameplayEventBinary, senderInfo) => {
+    try {
+        var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString()
+        var jsonObj = JSON.parse(gameplayEventStr)
+        var roomId = jsonObj.roomId
+        var senderId = jsonObj.senderId
+        var room = lobby.getRoomById(roomId)
+        if (room.udpConnections.get(senderId) !== undefined) {
+            room.udpConnections.forEach(udpClient => {
+                if (senderId !== udpClient.playerId) {
+                    udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+                }
+            })
+        } 
+        else {
+            var player = room.roomMembers.find(player => player.playerId === senderId)
+            if (player !== undefined) {
+                room.udpConnections.set(senderId, new UDPClient(senderInfo.address, senderInfo.port))
+                room.udpConnections.forEach(udpClient => {
+                    if (senderId !== udpClient.playerId) {
+                        udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
+                    }
+                })
             }
-        })
+        }
+    }
+    catch (e) {
+        console.log('error parsing gamePlayEvent \n' + e)
     }
 })
 

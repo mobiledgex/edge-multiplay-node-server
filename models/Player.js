@@ -16,13 +16,6 @@ class Player {
         this.playerName = playerName
         this.playerAvatar = playerAvatar
         this.playerIndex = playerIndex
-        this.udpPort = 0
-    }
-    /**
-     * @param  {integer} udpReceivePort the udp receive port to be assigned to the player
-     */
-    setPlayerUDPPort(udpReceivePort){
-        this.udpPort = udpReceivePort
     }
 }
 
