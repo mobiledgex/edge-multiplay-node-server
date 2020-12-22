@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 /**
  * Class representing the Player.
  * 
