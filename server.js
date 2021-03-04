@@ -181,7 +181,10 @@ server.listen(3000, () => {
     console.log(`WebSocket is listening on ${address.address}:${address.port}`)
 })
 
-
+/**
+ * Adds connected client to the lobby after being authenticated
+ * @param  {Object} connection connection object contains the request object, socket object and headers object.
+ */
 function addToLobby(connection){
     var {request, socket, head} = connection
     wsServer.handleUpgrade(request, socket, head, function done(ws) {
@@ -189,6 +192,10 @@ function addToLobby(connection){
     })
 }
 
+/**
+ * Rejects connected client access to the lobby due to authentication faliure
+ * @param  {Object} connection connection object contains the request object, socket object and headers object.
+ */
 function rejectConnection(connection){
     var {socket} = connection
     console.log('destroying connection')
