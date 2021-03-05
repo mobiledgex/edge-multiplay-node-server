@@ -183,7 +183,7 @@ server.listen(3000, () => {
 
 /**
  * Adds connected client to the lobby after being authenticated
- * @param  {Object} connection connection object contains the request object, socket object and headers object.
+ * @param  {Object} connection object contains the request object, socket object and headers object.
  */
 function addToLobby(connection){
     var {request, socket, head} = connection
@@ -193,7 +193,7 @@ function addToLobby(connection){
 }
 
 /**
- * Rejects connected client access to the lobby due to authentication faliure
+ * Rejects connected client access to the lobby due to authentication failure
  * @param  {Object} connection connection object contains the request object, socket object and headers object.
  */
 function rejectConnection(connection){
