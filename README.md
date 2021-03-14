@@ -10,18 +10,30 @@ Checkout the server documentation [here](https://mobiledgex.github.io/edge-multi
 - **[MobiledgeX Unity SDK](https://github.com/mobiledgex/edge-cloud-sdk-unity)**
 - **EdgeMultiplay Unity Client**
 
+### EdgeMultiplay Unity Client Tutorials : https://www.youtube.com/watch?v=9kMz6Q3g0xQ&list=PLwUZZfaECSv18E5d0ooDR7S8416pImW8W
+
 
 ## Usage
 
-### Get Started Video :  https://www.youtube.com/watch?v=sox3vqhaW3A
+Download EdgeMultiplay Module from npm
+```
+npm install edge-multiplay
+```
+Example of Usage
+```
+const edgeMultiplay = require('edge-multiplay')
+
+edgeMultiplay.wsServer.on('newConnection',(path, connection)=>{
+  // your logic goes here 
+  // On success call
+  edgeMultiplay.addToLobby(connection)
+  // On failure call edgeMultiplay.rejectConnection(connection)
+})
+```
 
 #### For Running the server on your machine 
 
-- Clone the repo.
-- In your command line run ``` npm start ``` the server should be running on your local host.
-
 On the Unity Client change the following:
-
 
 - In EdgeManager check Use Local Host Server
 - Specify the Host IP Address

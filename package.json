@@ -1,22 +1,25 @@
 {
   "name": "edge-multiplay",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A sample server for matchmaking & a relay server for multiplayer experiences",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "npx nodemon server.js"
   },
-  "keywords": [],
+  "keywords": [
+    "unity",
+    "game server",
+    "relay server",
+    "multiplayer",
+    "unity3d",
+    "edgemultiplay"
+  ],
   "author": "MobiledgeX",
   "license": "Apache-2.0",
   "dependencies": {
-    "dgram": "^1.0.1",
     "uuidv4": "^6.0.6",
     "ws": "^7.2.3"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.4"
   },
   "repository": {
     "type": "git",
