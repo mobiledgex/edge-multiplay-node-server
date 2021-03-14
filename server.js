@@ -193,7 +193,7 @@ function addToLobby(connection){
 }
 
 /**
- * Rejects connected client access to the lobby due to authentication faliure
+ * Rejects connected client access to the lobby due to authentication failure
  * @param  {Object} connection object contains the request object, socket object and headers object.
  */
 function rejectConnection(connection){
