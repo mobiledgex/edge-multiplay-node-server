@@ -67,7 +67,6 @@ wsServer.on('connection', function connection(ws, request) {
             switch (jsonObj.type) {
                 case 'JoinOrCreateRoom':
                     console.log('JoinOrCreateRoom Request received from client %o', jsonObj)
-
                     roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
                     break
                 case 'GetRooms':
