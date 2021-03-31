@@ -33,11 +33,11 @@ const UDPClient = require('../models/UDPClient').UDPClient
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
  */
-function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom) {
+function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags) {
     if (lobby.availableRooms.length === 0) {
-        return createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom)
+        return createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags)
     } else {
-        return joinRoom(lobby, lobby.availableRooms[0].roomId, playerId, playerName, playerAvatar)
+        return joinRoom(lobby, lobby.availableRooms[0].roomId, playerId, playerName, playerAvatar, playerTags)
     }
 }
 /**
@@ -48,7 +48,7 @@ function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersP
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
  */
-function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom) {
+function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags) {
     let connection = lobby.getPlayerConnection(playerId)
     if (connection === undefined){
         console.log('cannot find player connection')
@@ -61,7 +61,7 @@ function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom
         return undefined
     }
     var newRoom = new Room(lobby.rooms.length, [], maxPlayersPerRoom)
-    newRoom.addPlayer(new Player(playerId, playerName, playerAvatar, 0))
+    newRoom.addPlayer(new Player(playerId, playerName, playerAvatar, 0, playerTags))
     lobby.addRoom(newRoom)
     var roomCreatedEvent = new events.RoomCreatedEvent(newRoom)
     connection.send(roomCreatedEvent.convertToJSONString())
@@ -80,7 +80,7 @@ function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom
  * @param  {string} playerName  name of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  */
-function joinRoom(lobby, roomId, playerId, playerName, playerAvatar) {
+function joinRoom(lobby, roomId, playerId, playerName, playerAvatar, playerTags) {
     var connection = lobby.getPlayerConnection(playerId)
     if (lobby.availableRooms.length === 0) {
         connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
@@ -97,7 +97,7 @@ function joinRoom(lobby, roomId, playerId, playerName, playerAvatar) {
         connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
         return undefined
     }
-    var newPlayer = new Player(playerId, playerName, playerAvatar, room.roomMembers.length)
+    var newPlayer = new Player(playerId, playerName, playerAvatar, room.roomMembers.length, playerTags)
     room.addPlayer(newPlayer)
     console.log('Member Joined Room')
     connection.send(new events.RoomJoinEvent(room).convertToJSONString())
