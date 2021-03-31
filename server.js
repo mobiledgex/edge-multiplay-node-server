@@ -67,7 +67,7 @@ wsServer.on('connection', function connection(ws, request) {
             switch (jsonObj.type) {
                 case 'JoinOrCreateRoom':
                     console.log('JoinOrCreateRoom Request received from client %o', jsonObj)
-                    roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom)
+                    roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
                     break
                 case 'GetRooms':
                     console.log('GetRooms Request received from client %o', jsonObj)
@@ -81,11 +81,11 @@ wsServer.on('connection', function connection(ws, request) {
                     break
                 case 'CreateRoom':
                     console.log('CreateRoom Request received from client %o', jsonObj)
-                    roomId = util.createRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom)
+                    roomId = util.createRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
                     break
                 case 'JoinRoom':
                     console.log('JoinRoom Request received from client %o', jsonObj)
-                    roomId = util.joinRoom(lobby, jsonObj.roomId, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar)
+                    roomId = util.joinRoom(lobby, jsonObj.roomId, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.playerTags)
                     break
                 case 'ExitRoom':
                     console.log('ExitRoom Request received from client %o', jsonObj)
@@ -194,7 +194,7 @@ function addToLobby(connection){
 
 /**
  * Rejects connected client access to the lobby due to authentication failure
- * @param  {Object} connection connection object contains the request object, socket object and headers object.
+ * @param  {Object} connection object contains the request object, socket object and headers object.
  */
 function rejectConnection(connection){
     var {socket} = connection
