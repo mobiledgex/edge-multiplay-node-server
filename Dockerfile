@@ -6,7 +6,7 @@ COPY package*.json /usr/src/app/
 RUN npm install
 COPY . /usr/src/app
 
-CMD node server.js
+CMD node example.js
 
 EXPOSE 3000
 EXPOSE 5000/udp
