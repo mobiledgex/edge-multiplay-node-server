@@ -1,0 +1,13 @@
+region: EU
+app: 
+  key: 
+    name: EdgeMultiplay-Deploy
+    version: 1.2
+    organization: MobiledgeX-Samples
+  image_path: docker.mobiledgex.net/mobiledgex-samples/images/edge-multiplay
+  image_type: 1
+  # Set deployment to "docker" instead of "kubernetes" for a docker app
+  deployment: docker
+  default_flavor: 
+    name: m4.small
+  access_ports: "tcp:3000,udp:5000"
