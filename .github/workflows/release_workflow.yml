@@ -1,4 +1,4 @@
-name: Publish to MobiledgeXSamples Docker Hub, MobiledgeX Registry & Deploy app
+name: Publish to MobiledgeXSamples MobiledgeX Registry & Deploy app
 
 on:
   release:
@@ -6,7 +6,7 @@ on:
 
 jobs:
  push_to_registry:
-    name: Push Docker image to Docker Hub
+    name: Push Docker image to MobiledgeX Registry & Deploy app
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -24,15 +24,6 @@ jobs:
           password: ${{ secrets.MOBILEDGEX_PASSWORD }}
           registry: docker.mobiledgex.net
           repository: mobiledgex-samples/images/edge-multiplay
-          tags: ${{ steps.get_release_version.outputs.VERSION }}
-
-      - name: Push Image to Docker Hub
-        id: dockerhub-registery
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_SAMPLES_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_SAMPLES_PASSWORD }}
-          repository: mobiledgexsamples/edge-multiplay
           tags: ${{ steps.get_release_version.outputs.VERSION }}
 
       - name: Set app config for MobiledgeX deployment
