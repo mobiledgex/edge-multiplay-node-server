@@ -1,0 +1,10 @@
+---
+- appinst:
+    key:
+      cluster_inst_key:
+        cluster_key:
+          name: ${cluster_name}
+        cloudlet_key:
+          name: ${cloudlet_name}
+          organization: ${operator_org}
+        organization: ${developer_org}

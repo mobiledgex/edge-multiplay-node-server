@@ -1,0 +1,15 @@
+---
+region: ${region}
+app:
+  key:
+    name: ${app_name}
+    version: "${app_version}"
+    organization: ${developer_org}
+  image_path: ${image_path}
+  image_type: ${image_type}
+  deployment: ${deployment_type}
+  default_flavor:
+    name: ${flavor_name}
+  access_ports: "${access_ports}"
+
+

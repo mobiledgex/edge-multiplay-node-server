@@ -1,0 +1,50 @@
+name: Publish to MobiledgeXSamples Docker Hub, MobiledgeX Registry & Deploy app
+
+on:
+  release:
+    types: [published]
+
+jobs:
+ push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Get release version
+        id: get_release_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Push Image to MobiledgeX Docker Registery(Gitlab)
+        id: mobiledgex-registery
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.MOBILEDGEX_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_PASSWORD }}
+          registry: docker.mobiledgex.net
+          repository: mobiledgex-samples/images/edge-multiplay
+          tags: ${{ steps.get_release_version.outputs.VERSION }}
+
+      - name: Push Image to Docker Hub
+        id: dockerhub-registery
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_SAMPLES_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_SAMPLES_PASSWORD }}
+          repository: mobiledgexsamples/edge-multiplay
+          tags: ${{ steps.get_release_version.outputs.VERSION }}
+
+      - name: Set app config for MobiledgeX deployment
+        id: mobiledgex-app-config
+        run: |
+         . ./set_app_config.sh -v ${{ steps.get_release_version.outputs.VERSION }}
+        shell: bash
+        working-directory: .mobiledgex 
+
+      - name: MobiledgeX Deploy
+        uses: mobiledgex/deploy-app-action@v1.0
+        with:
+          setup: main
+          username: ${{ secrets.MOBILEDGEX_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_PASSWORD }}
