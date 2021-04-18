@@ -1,3 +1,8 @@
+![NPM](https://img.shields.io/npm/l/edge-multiplay)
+![npm](https://img.shields.io/npm/v/edge-multiplay)
+![Twitter Follow](https://img.shields.io/twitter/follow/mobiledgex?style=social)
+
+
 # Edge-Mutiplay NodeJS Server
 EdgeMultiplay is an open source multiplayer game server that works with [EdgeMultiplay Unity Client](https://github.com/mobiledgex/edge-multiplay-unity-client). The server is built using NodeJS and we provide a ready made client written in C# Unity.
 
