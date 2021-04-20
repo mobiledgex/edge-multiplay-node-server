@@ -4,7 +4,7 @@
   "description": "A sample server for matchmaking & a relay server for multiplayer experiences",
   "main": "server.js",
   "scripts": {
-    "start": "node example.js",
+    "start": "node example.js"
   },
   "keywords": [
     "unity",
