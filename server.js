@@ -103,7 +103,8 @@ wsServer.on('connection', function connection(ws, request) {
             }
         }
         catch (err) {
-            console.log('Error parsing received message \n'+err)
+            connection.send(new events.NotificationEvent('parsing-error').convertToJSONString())
+            console.log('Error parsing received message \n' + err)
         }
     })
 
@@ -151,7 +152,7 @@ udpServer.on('message', (gameplayEventBinary, senderInfo) => {
                     udpServer.send(gameplayEventBinary, 0, gameplayEventBinary.length, udpClient.port, udpClient.address)
                 }
             })
-        } 
+        }
         else {
             var player = room.roomMembers.find(player => player.playerId === senderId)
             if (player !== undefined) {
@@ -202,4 +203,4 @@ function rejectConnection(connection){
     socket.destroy()
 }
 
-module.exports = {wsServer, addToLobby, rejectConnection}
+module.exports = { wsServer, udpServer, lobby, addToLobby, rejectConnection}

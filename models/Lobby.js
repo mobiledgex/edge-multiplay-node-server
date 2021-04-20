@@ -17,6 +17,7 @@
 
 const { v4: uuidv4 } = require('uuid')
 const WebSocket = require('ws')
+const events = require('./Events').Events
 /**
  * Class representing a Lobby.
  * A Lobby is where all the rooms and the players' connections are stored 
@@ -60,6 +61,8 @@ class Lobby {
     addRoom(room) {
         this.rooms.push(room)
         this.availableRooms.push(room)
+        var newRoomNotification = new events.NotificationEvent('new-room-created-in-lobby')
+        this.notifyLobbyMembers(newRoomNotification)
     }
     /**
      * @param  {string} roomId the unique room id of the room to be removed
@@ -80,6 +83,8 @@ class Lobby {
                 object.splice(index, 1)
             }
         })
+        var roomRemovedNotification = new events.NotificationEvent('room-removed-from-lobby')
+        this.notifyLobbyMembers(roomRemovedNotification)
     }
     /**
      * @param  {Event} Event event object, representing the event to be sent to Lobby members
@@ -120,7 +125,7 @@ class Lobby {
         this.availableRooms.forEach((availableRoom, index, object) => {
             if (availableRoom.roomId === room.roomId) {
                 object.splice(index, 1)
-            } 
+            }
         })
         this.fullRooms.push(room)
     }
