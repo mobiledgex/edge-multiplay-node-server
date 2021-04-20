@@ -123,7 +123,7 @@ function exitRoom(lobby, roomId, playerId) {
         lobby.removeRoom(roomId)
     }
     else {
-        // add room to availableRooms List
+        // add room to availableRooms list
         // remove the room from fullRooms list
         if (room.roomMembers.length < room.maxPlayersPerRoom) {
             lobby.availableRooms.push(room)
