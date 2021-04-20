@@ -30,40 +30,51 @@ class Room {
      */
     constructor(roomIndex, roomMembers, maxPlayersPerRoom) {
         this.roomIndex = roomIndex
-        this.roomId =  uuidv4()
+        this.roomId = uuidv4()
         this.roomMembers = roomMembers
         this.maxPlayersPerRoom = maxPlayersPerRoom
         this.udpConnections = new Map()
     }
+
     /**
      * @param  {Player} player Player object, representing the player to be added to the room
      */
     addPlayer(player) {
         this.roomMembers.push(player)
     }
+
     /**
      * @param  {string} playerId unique player id assigned once the connection is established using uuid package
      */
     removePlayer(playerId) {
+        var updatedRoomMembers, counter
+        this.udpConnections.delete(playerId)
         this.roomMembers.forEach((roomMember, index, object) => {
             if (roomMember.playerId === playerId) {
                 object.splice(index, 1)
+                updatedRoomMembers = object
             }
         })
+        for (counter = 0; counter < updatedRoomMembers.length; counter++) {
+            updatedRoomMembers[counter].playerIndex = counter
+        }
+        this.roomMembers = updatedRoomMembers
     }
+
     isFull() {
         return this.roomMembers.length === this.maxPlayersPerRoom
     }
+
     isEmpty() {
         return this.roomMembers.length === 0
     }
+
     /**
      * @param  {Lobby} Lobby Lobby object, A Lobby is where all the rooms and the players' connections are stored , Think of a Lobby as the place where all the players hangout before they are matched to a room
      * @param  {Event} Event Event object, representing the event to be broadcasted from the sender to the sender's room
      * @param  {string} senderId the playerId of the sender, a playerId is a unique player id assigned once the connection is established using uuid package
      */
     broadcastGameFlowEvent(Lobby, Event, senderId) {
-        //no overloading in JS
         if (typeof senderId !== "undefined") {
             this.roomMembers.forEach(player => {
                 if (senderId != player.playerId) {
@@ -83,6 +94,7 @@ class Room {
             })
         }
     }
+
     /**
      * @param  {Lobby} Lobby Lobby object, A Lobby is where all the rooms and the players' connections are stored , Think of a Lobby as the place where all the players hangout before they are matched to a room
      * @param  {GamePlayEvent} gamePlayEvent GamePlayEvent object, representing the gamePlayEvent to be broadcasted from the sender to the sender's room

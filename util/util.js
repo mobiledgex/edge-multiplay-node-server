@@ -50,11 +50,12 @@ function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersP
  */
 function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags) {
     let connection = lobby.getPlayerConnection(playerId)
-    if (connection === undefined){
+    if (connection === undefined) {
+        connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
         console.log('cannot find player connection')
         return
     }
-  
+
     if (lobby.rooms.length === lobby.MAX_ROOMS_PER_LOBBY) {
         connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
         console.log('Lobby reached maximum rooms threshold, Create room request failed')
@@ -65,8 +66,6 @@ function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom
     lobby.addRoom(newRoom)
     var roomCreatedEvent = new events.RoomCreatedEvent(newRoom)
     connection.send(roomCreatedEvent.convertToJSONString())
-    var NotificationEvent = new events.NotificationEvent('new-room-created-in-lobby')
-    lobby.notifyLobbyMembers(NotificationEvent)
     roomId = newRoom.roomId
     return roomId
 }
@@ -83,6 +82,7 @@ function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom
 function joinRoom(lobby, roomId, playerId, playerName, playerAvatar, playerTags) {
     var connection = lobby.getPlayerConnection(playerId)
     if (lobby.availableRooms.length === 0) {
+        console.log('No rooms available in the lobby, Failing the Join request')
         connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
         return undefined
     }
@@ -119,15 +119,26 @@ function exitRoom(lobby, roomId, playerId) {
     var room = lobby.getRoomById(roomId)
     room.removePlayer(playerId)
     if (room.isEmpty()) {
+        console.log('Deleting room, since there is no players left in the room')
         lobby.removeRoom(roomId)
-        return undefined
+    }
+    else {
+        // add room to availableRooms List
+        // remove the room from fullRooms list
+        if (room.roomMembers.length < room.maxPlayersPerRoom) {
+            lobby.availableRooms.push(room)
+            lobby.fullRooms.forEach((fullRoom, index, object) => {
+                if (fullRoom.roomId === room.roomId) {
+                    object.splice(index, 1)
+                }
+            })
+        }
+        //Notify remaining room members that a player left the room
+        room.broadcastGameFlowEvent(lobby, new events.RoomMemberLeftEvent(playerId))
     }
     //Notify the player that they left the room
     var connection = lobby.getPlayerConnection(playerId)
     connection.send(new events.NotificationEvent('left-room').convertToJSONString())
-
-    //Notify remaining room members that a player left the room
-    room.broadcastGameFlowEvent(lobby, new events.MemberLeftEvent(playerId))
     return undefined
 }
 
