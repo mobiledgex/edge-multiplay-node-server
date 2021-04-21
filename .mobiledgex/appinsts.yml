@@ -1,0 +1,29 @@
+- appinst:
+    key:
+      cluster_inst_key:
+        cluster_key:
+          name: autoclusteredgemultiplay
+        cloudlet_key:
+          name: fairview-main
+          organization: GDDT
+        organization: MobiledgeX-Samples
+
+- appinst:
+    key:
+      cluster_inst_key:
+        cluster_key:
+          name: autoclusteredgemultiplay
+        cloudlet_key:
+          name: hk-main
+          organization: HKT
+        organization: MobiledgeX-Samples
+        
+- appinst:
+    key:
+      cluster_inst_key:
+        cluster_key:
+          name: autoclusteredgemultiplay
+        cloudlet_key:
+          name: montreal-pitfield
+          organization: TELUS
+        organization: MobiledgeX-Samples

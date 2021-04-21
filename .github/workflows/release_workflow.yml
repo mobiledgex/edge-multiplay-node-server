@@ -1,0 +1,36 @@
+name: Publish to MobiledgeX Registry & Deploy app
+
+on:
+  release:
+    types: [published]
+
+jobs:
+ push_to_registry:
+    name:  Publish to MobiledgeX Registry & Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        id: check-out-repo
+        uses: actions/checkout@v2
+
+      - name: Get release version
+        id: get_release_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Push Image to MobiledgeX Docker Registery (Gitlab)
+        id: mobiledgex-registery
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.MOBILEDGEX_SAMPLES_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_SAMPLES_PASSWORD }}
+          registry: docker.mobiledgex.net
+          repository: mobiledgex-samples/images/edge-multiplay
+          tags: ${{ steps.get_release_version.outputs.VERSION }}
+
+      - name: MobiledgeX Deploy
+        id: mobiledgex-deploy
+        uses: mobiledgex/deploy-app-action@v1.0
+        with:
+          setup: main
+          username: ${{ secrets.MOBILEDGEX_SAMPLES_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_SAMPLES_PASSWORD }}
