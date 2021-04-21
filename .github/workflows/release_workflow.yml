@@ -21,8 +21,8 @@ jobs:
         id: mobiledgex-registery
         uses: docker/build-push-action@v1
         with:
-          username: ${{ secrets.MOBILEDGEX_USERNAME }}
-          password: ${{ secrets.MOBILEDGEX_PASSWORD }}
+          username: ${{ secrets.MOBILEDGEX_SAMPLES_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_SAMPLES_PASSWORD }}
           registry: docker.mobiledgex.net
           repository: mobiledgex-samples/images/edge-multiplay
           tags: ${{ steps.get_release_version.outputs.VERSION }}
@@ -32,5 +32,5 @@ jobs:
         uses: mobiledgex/deploy-app-action@v1.0
         with:
           setup: main
-          username: ${{ secrets.MOBILEDGEX_USERNAME }}
-          password: ${{ secrets.MOBILEDGEX_PASSWORD }}
+          username: ${{ secrets.MOBILEDGEX_SAMPLES_USERNAME }}
+          password: ${{ secrets.MOBILEDGEX_SAMPLES_PASSWORD }}
