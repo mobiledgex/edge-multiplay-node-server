@@ -1,0 +1,26 @@
+name: Publish to MobiledgeXSamples Docker Hub
+
+on:
+  release:
+    types: [published]
+
+jobs:
+ push_to_dockerhub:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Get release version
+        id: get_release_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Push Image to Docker Hub
+        id: dockerhub-registery
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_SAMPLES_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_SAMPLES_PASSWORD }}
+          repository: mobiledgexsamples/edge-multiplay
+          tags: ${{ steps.get_release_version.outputs.VERSION }}
