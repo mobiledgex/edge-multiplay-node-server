@@ -1,6 +1,11 @@
 ![NPM](https://img.shields.io/npm/l/edge-multiplay)
 ![npm](https://img.shields.io/npm/v/edge-multiplay)
-![Twitter Follow](https://img.shields.io/twitter/follow/mobiledgex?style=social)
+<a href="https://twitter.com/intent/follow?screen_name=mobiledgex">
+<img src="https://img.shields.io/twitter/follow/mobiledgex?style=social" alt="follow on Twitter">
+</a>
+ <a href="https://discord.gg/k22WcfMFZ3">
+<img src="https://img.shields.io/discord/779074183551385620?logo=discord" alt="chat on Discord">
+</a>
 
 
 # Edge-Mutiplay NodeJS Server
