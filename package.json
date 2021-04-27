@@ -4,7 +4,8 @@
   "description": "A sample server for matchmaking & a relay server for multiplayer experiences",
   "main": "server.js",
   "scripts": {
-    "start": "node example.js"
+    "start": "node app.js",
+    "test": "mocha --exit"
   },
   "keywords": [
     "unity",
@@ -17,6 +18,8 @@
   "author": "MobiledgeX",
   "license": "Apache-2.0",
   "dependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
     "uuidv4": "^6.0.6",
     "ws": "^7.2.3"
   },
@@ -27,7 +30,5 @@
   "bugs": {
     "url": "https://github.com/mobiledgex/edge-mutiplay-node-server/issues"
   },
-  "engines" : {
-     "node" : ">=0.12" },
   "homepage": "https://github.com/mobiledgex/edge-mutiplay-node-server#readme"
 }

@@ -33,9 +33,9 @@ class Lobby {
         this.MAX_ROOMS_PER_LOBBY = MAX_ROOMS_PER_LOBBY
         this.connectedClients = {}
         this.nameMap = {}
-        this.rooms = []
-        this.availableRooms = []
-        this.fullRooms = []
+        this.rooms = new Map()
+        this.availableRooms = new Map()
+        this.fullRooms = new Map()
     }
     /**
      * @param  {string} playerKey  unique identifier of the session using the |Sec-WebSocket-Key| header
@@ -59,8 +59,8 @@ class Lobby {
      * @param  {Room} room room object, representing the room to be added
      */
     addRoom(room) {
-        this.rooms.push(room)
-        this.availableRooms.push(room)
+        this.rooms.set(room.roomId, room)
+        this.availableRooms.set(room.roomId, room)
         var newRoomNotification = new events.NotificationEvent('new-room-created-in-lobby')
         this.notifyLobbyMembers(newRoomNotification)
     }
@@ -68,21 +68,9 @@ class Lobby {
      * @param  {string} roomId the unique room id of the room to be removed
      */
     removeRoom(roomId) {
-        this.rooms.forEach((room, index, object) => {
-            if (room.roomId === roomId) {
-                object.splice(index, 1)
-            }
-        })
-        this.availableRooms.forEach((room, index, object) => {
-            if (room.roomId === roomId) {
-                object.splice(index, 1)
-            }
-        })
-        this.fullRooms.forEach((room, index, object) => {
-            if (room.roomId === roomId) {
-                object.splice(index, 1)
-            }
-        })
+        this.rooms.delete(roomId)
+        this.availableRooms.delete(roomId)
+        this.fullRooms.delete(roomId)
         var roomRemovedNotification = new events.NotificationEvent('room-removed-from-lobby')
         this.notifyLobbyMembers(roomRemovedNotification)
     }
@@ -105,12 +93,7 @@ class Lobby {
         var connection = this.connectedClients[playerKey]
         return connection
     }
-    /**
-     * @param  {string} roomId the unique room id of the room
-     */
-    getRoomById(roomId) {
-        return this.rooms.find(room => room.roomId === roomId)
-    }
+
     /**
      * @param  {string} roomId the unique room id of the room
      * @param  {Array.<UDPClient>} udpClients array of the UDPClients representing players in the room
@@ -122,12 +105,10 @@ class Lobby {
      * @param  {Room} room room object, representing the room to be marked full
      */
     markRoomAsFull(room) {
-        this.availableRooms.forEach((availableRoom, index, object) => {
-            if (availableRoom.roomId === room.roomId) {
-                object.splice(index, 1)
-            }
-        })
-        this.fullRooms.push(room)
+        if (this.availableRooms.has(room.roomId)) {
+            this.availableRooms.delete(room.roomId)
+        }
+        this.fullRooms.set(room.roomId, room)
     }
 }
 module.exports.Lobby = Lobby

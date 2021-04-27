@@ -35,7 +35,7 @@ function joinOrCreateRoomRequest(playerName, playerId, playerAvatar, maxPlayersP
     return joinOrCreateReq
 }
 
-function joinRoom(roomId, playerName, playerId, playerAvatar) {
+function joinRoomRequest(roomId, playerName, playerId, playerAvatar) {
     let joinRoomReq = {}
     joinRoomReq.type = 'JoinRoom'
     joinRoomReq.roomId = roomId
@@ -45,8 +45,8 @@ function joinRoom(roomId, playerName, playerId, playerAvatar) {
     return joinRoomReq
 }
 
-module.exports.client_util ={
+module.exports.client_util = {
     createRoomRequest,
     joinOrCreateRoomRequest,
-    joinRoom
+    joinRoomRequest
 }
