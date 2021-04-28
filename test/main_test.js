@@ -3,7 +3,7 @@ const WebSocket = require('ws');
 const server = require('../app.js')
 const client_util = require('../util/client_util').client_util
 let roomId = ''
-describe('room', () => {
+describe('Main Tests', () => {
 
   it('Test create room', (done) => {
     var ws = new WebSocket('ws://localhost:3000');
@@ -69,9 +69,6 @@ describe('room', () => {
           var playerConnection = server.edgeMultiplay.lobby.connectedClients[playerKey]
           expect(playerConnection.address).equal(ws2.address)
           expect(playerConnection.port).equal(ws2.port)
-          expect(server.edgeMultiplay.lobby.rooms.size).equal(1)
-          expect(server.edgeMultiplay.lobby.availableRooms.size).equal(1)
-          expect(server.edgeMultiplay.lobby.fullRooms.size).equal(0)
           // join room
           player2Id = jsonObj.playerId
           joinReq = client_util.joinRoomRequest(roomId, 'Player2', player2Id, 0);
