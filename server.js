@@ -51,7 +51,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
 })
 
 wsServer.on('connection', function connection(ws, request) {
-    console.log('num of rooms in the Lobby : ' + lobby.rooms.length)
+    console.log('num of rooms in the Lobby : ' + lobby.rooms.size)
     console.log('player Connected')
 
     let playerKey = request.headers['sec-websocket-key']
@@ -72,12 +72,16 @@ wsServer.on('connection', function connection(ws, request) {
                 case 'GetRooms':
                     console.log('GetRooms Request received from client %o', jsonObj)
                     var connection = lobby.getPlayerConnection(playerId)
-                    connection.send(new events.RoomsListEvent(lobby.rooms).convertToJSONString())
+                    var roomsArray = Array.from(lobby.rooms, ([, room]) => (room));
+                    var roomsListEvent = new events.RoomsListEvent(roomsArray).convertToJSONString()
+                    connection.send(roomsListEvent)
                     break
                 case 'GetAvailableRooms':
                     console.log('GetAvailableRooms Request received from client %o', jsonObj)
                     var connection = lobby.getPlayerConnection(playerId)
-                    connection.send(new events.AvailableRoomsListEvent(lobby.availableRooms).convertToJSONString())
+                    var availableRoomsArray = Array.from(lobby.availableRooms, ([, room]) => (room));
+                    var availableRoomsListEvent = new events.AvailableRoomsListEvent(availableRoomsArray).convertToJSONString()
+                    connection.send(availableRoomsListEvent)
                     break
                 case 'CreateRoom':
                     console.log('CreateRoom Request received from client %o', jsonObj)
@@ -92,7 +96,7 @@ wsServer.on('connection', function connection(ws, request) {
                     roomId = util.exitRoom(lobby, jsonObj.roomId, jsonObj.playerId)
                     break
                 case 'GamePlayEvent':
-                    var room = lobby.getRoomById(jsonObj.roomId)
+                    var room = lobby.rooms.get(jsonObj.roomId)
                     if (room !== undefined) {
                         room.broadcastGamePlayEvent(lobby, jsonObj)
                     }
@@ -103,7 +107,7 @@ wsServer.on('connection', function connection(ws, request) {
             }
         }
         catch (err) {
-            connection.send(new events.NotificationEvent('parsing-error').convertToJSONString())
+            ws.send(new events.NotificationEvent('parsing-error').convertToJSONString())
             console.log('Error parsing received message \n' + err)
         }
     })
@@ -112,11 +116,10 @@ wsServer.on('connection', function connection(ws, request) {
         console.log(`WebSocket Server error : ${err}`)
     })
 
-    ws.on('close', function (code) {
-        console.log(`client closed ,close code:  ${code}`)
+    ws.on('close', function () {
         console.log(`member left, member uuid : ${playerId}, roomId : ${roomId}`)
         // remove member from room
-        var room = lobby.getRoomById(roomId)
+        var room = lobby.rooms.get(roomId)
         if (room === undefined) {
             return
         }
@@ -128,6 +131,8 @@ wsServer.on('connection', function connection(ws, request) {
             lobby.removeRoom(roomId)
             return
         }
+        lobby.fullRooms.delete(roomId)
+        lobby.availableRooms.set(roomId, room)
         // if room is not empty, notify other roomMembers that a player left
         room.broadcastGameFlowEvent(lobby, new events.RoomMemberLeftEvent(playerId))
         return
@@ -145,7 +150,7 @@ udpServer.on('message', (gameplayEventBinary, senderInfo) => {
         var jsonObj = JSON.parse(gameplayEventStr)
         var roomId = jsonObj.roomId
         var senderId = jsonObj.senderId
-        var room = lobby.getRoomById(roomId)
+        var room = lobby.rooms.get(roomId)
         if (room.udpConnections.get(senderId) !== undefined) {
             room.udpConnections.forEach(udpClient => {
                 if (senderId !== udpClient.playerId) {
@@ -186,8 +191,8 @@ server.listen(3000, () => {
  * Adds connected client to the lobby after being authenticated
  * @param  {Object} connection object contains the request object, socket object and headers object.
  */
-function addToLobby(connection){
-    var {request, socket, head} = connection
+function addToLobby(connection) {
+    var { request, socket, head } = connection
     wsServer.handleUpgrade(request, socket, head, function done(ws) {
         wsServer.emit('connection', ws, request)
     })
@@ -197,10 +202,10 @@ function addToLobby(connection){
  * Rejects connected client access to the lobby due to authentication failure
  * @param  {Object} connection object contains the request object, socket object and headers object.
  */
-function rejectConnection(connection){
-    var {socket} = connection
+function rejectConnection(connection) {
+    var { socket } = connection
     console.log('destroying connection')
     socket.destroy()
 }
 
-module.exports = { wsServer, udpServer, lobby, addToLobby, rejectConnection}
+module.exports = { wsServer, udpServer, lobby, addToLobby, rejectConnection }
