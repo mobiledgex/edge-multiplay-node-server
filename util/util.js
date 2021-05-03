@@ -157,10 +157,10 @@ function getLobbyStats(lobby) {
     stats.membersInAvailableRooms = 0
     stats.membersInFullRooms = 0
     if (lobby.availableRooms.size > 0) {
-        lobby.availableRooms.forEach(() => { stats.membersInAvailableRooms++ })
+        lobby.availableRooms.forEach((value) => { stats.membersInAvailableRooms += value.roomMembers.length })
     }
     if (lobby.fullRooms.size > 0) {
-        lobby.fullRooms.forEach(() => { stats.membersInFullRooms++ })
+        lobby.fullRooms.forEach((value) => { stats.membersInFullRooms += value.roomMembers.length })
     }
     stats.numOfConnectedClients = Object.keys(lobby.connectedClients).length
     stats.membersStillInLobby = (stats.numOfConnectedClients - (stats.membersInAvailableRooms + stats.membersInFullRooms))
