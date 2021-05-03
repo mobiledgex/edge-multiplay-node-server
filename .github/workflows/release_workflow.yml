@@ -17,7 +17,7 @@ jobs:
         id: mobiledgex-registery
         uses: docker/build-push-action@v1
         with:
-          username: ${{ secrets.MOBILEDGEX_SAMPLES_USERNAME }}
+          username: myUserName
           password: ${{ secrets.MOBILEDGEX_SAMPLES_PASSWORD }}
           registry: docker.mobiledgex.net
           repository: mobiledgex-samples/images/edge-multiplay-test
