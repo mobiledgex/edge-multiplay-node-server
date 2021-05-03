@@ -33,11 +33,21 @@ const server = http.createServer()
 const wsServer = new WebSocket.Server({ noServer: true })
 const dgram = require('dgram')
 const udpServer = dgram.createSocket('udp4')
+const express = require('express')
+const ehbs = require('express-handlebars')
+const path = require('path')
+const app = new express()
+const statsServer = require('http').createServer(app)
+const wsStatsServer = new WebSocket.Server({ server: statsServer })
 const Lobby = require('./models/Lobby').Lobby
 const UDPClient = require('./models/UDPClient').UDPClient
 const events = require('./models/Events').Events
 const util = require('./util/util').util
 const MAX_ROOMS_PER_LOBBY = 10
+const STATS_TCP_PORT = 7776
+const MAIN_TCP_PORT = 3000
+const MAIN_UDP_PORT = 5000
+
 let lobby = new Lobby(MAX_ROOMS_PER_LOBBY)
 
 server.on('upgrade', function upgrade(request, socket, head) {
@@ -68,6 +78,9 @@ wsServer.on('connection', function connection(ws, request) {
                 case 'JoinOrCreateRoom':
                     console.log('JoinOrCreateRoom Request received from client %o', jsonObj)
                     roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
+                    if (roomId !== undefined) {
+                        wsStatsServer.emit('updateStats')
+                    }
                     break
                 case 'GetRooms':
                     console.log('GetRooms Request received from client %o', jsonObj)
@@ -86,14 +99,23 @@ wsServer.on('connection', function connection(ws, request) {
                 case 'CreateRoom':
                     console.log('CreateRoom Request received from client %o', jsonObj)
                     roomId = util.createRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
+                    if (roomId !== undefined) {
+                        wsStatsServer.emit('updateStats')
+                    }
                     break
                 case 'JoinRoom':
                     console.log('JoinRoom Request received from client %o', jsonObj)
                     roomId = util.joinRoom(lobby, jsonObj.roomId, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.playerTags)
+                    if (roomId !== undefined) {
+                        wsStatsServer.emit('updateStats')
+                    }
                     break
                 case 'ExitRoom':
                     console.log('ExitRoom Request received from client %o', jsonObj)
-                    roomId = util.exitRoom(lobby, jsonObj.roomId, jsonObj.playerId)
+                    exitRoomSuccess = util.exitRoom(lobby, jsonObj.roomId, jsonObj.playerId)
+                    if (exitRoomSuccess === true) {
+                        wsStatsServer.emit('updateStats')
+                    }
                     break
                 case 'GamePlayEvent':
                     var room = lobby.rooms.get(jsonObj.roomId)
@@ -117,10 +139,12 @@ wsServer.on('connection', function connection(ws, request) {
     })
 
     ws.on('close', function () {
+
         console.log(`member left, member uuid : ${playerId}, roomId : ${roomId}`)
         // remove member from room
         var room = lobby.rooms.get(roomId)
         if (room === undefined) {
+            wsStatsServer.emit('updateStats')
             return
         }
         room.removePlayer(playerId)
@@ -129,12 +153,14 @@ wsServer.on('connection', function connection(ws, request) {
         // delete room if empty
         if (room.isEmpty()) {
             lobby.removeRoom(roomId)
+            wsStatsServer.emit('updateStats')
             return
         }
         lobby.fullRooms.delete(roomId)
         lobby.availableRooms.set(roomId, room)
         // if room is not empty, notify other roomMembers that a player left
         room.broadcastGameFlowEvent(lobby, new events.RoomMemberLeftEvent(playerId))
+        wsStatsServer.emit('updateStats')
         return
     })
 })
@@ -177,14 +203,14 @@ udpServer.on('message', (gameplayEventBinary, senderInfo) => {
 
 udpServer.on('listening', () => {
     const udp_address = udpServer.address()
-    console.log(`UDP server listening on  ${udp_address.address}:${udp_address.port}`)
+    console.log(`UDP server listening on ${udp_address.port}`)
 })
 
-udpServer.bind(5000)
+udpServer.bind(MAIN_UDP_PORT)
 
-server.listen(3000, () => {
+server.listen(MAIN_TCP_PORT, () => {
     const address = server.address()
-    console.log(`WebSocket is listening on ${address.address}:${address.port}`)
+    console.log(`WebSocket is listening on ${address.port}`)
 })
 
 /**
@@ -208,4 +234,31 @@ function rejectConnection(connection) {
     socket.destroy()
 }
 
+app.use(express.static(path.join(__dirname, 'public')))
+app.engine('handlebars', ehbs({ defaultLayout: 'main' }))
+app.set('view engine', 'handlebars')
+
+wsStatsServer.on('connection', (ws) => {
+    setImmediate(() => {
+        wsStatsServer.emit('updateStats');
+    });
+    wsStatsServer.on('updateStats', () => {
+        var stats = util.getLobbyStats(lobby)
+        var statsStr = JSON.stringify(stats)
+        ws.send(statsStr)
+    })
+})
+
+statsServer.listen(STATS_TCP_PORT, () => {
+    console.log(`Stats WebSocket is listening on ${STATS_TCP_PORT}`)
+})
+
+app.get('/', (req, res) => {
+    res.render('current_stats',
+        {
+            layout: 'main'
+        })
+})
+
+//create a server object:
 module.exports = { wsServer, udpServer, lobby, addToLobby, rejectConnection }

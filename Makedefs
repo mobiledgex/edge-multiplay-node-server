@@ -1,3 +1,3 @@
-ORG_NAME ?= 
-APP_NAME ?= 
-APP_VERS ?= 
+ORG_NAME ?= mobiledgex-samples
+APP_NAME ?= edgemultiplay-test
+APP_VERS ?= 1.2

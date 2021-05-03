@@ -55,7 +55,7 @@ function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom
     if (connection === undefined) {
         connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
         console.log('cannot find player connection')
-        return
+        return undefined
     }
 
     if (lobby.rooms.size === lobby.MAX_ROOMS_PER_LOBBY) {
@@ -120,7 +120,15 @@ function joinRoom(lobby, roomId, playerId, playerName, playerAvatar, playerTags)
  */
 function exitRoom(lobby, roomId, playerId) {
     var room = lobby.rooms.get(roomId)
-    room.removePlayer(playerId)
+    if (room === undefined) {
+        console.log('exitRoom failed, room not found')
+        return false
+    }
+    var playerRemoved = room.removePlayer(playerId)
+    if (playerRemoved === false) {
+        console.log('exitRoom failed, player not found')
+        return false
+    }
     if (room.isEmpty()) {
         console.log('Deleting room, since there is no players left in the room')
         lobby.removeRoom(roomId)
@@ -138,12 +146,32 @@ function exitRoom(lobby, roomId, playerId) {
     //Notify the player that they left the room
     var connection = lobby.getPlayerConnection(playerId)
     connection.send(new events.NotificationEvent('left-room').convertToJSONString())
-    return undefined
+    return true
+}
+
+function getLobbyStats(lobby) {
+    var stats = {}
+    stats.maxRoomsPerLobby = lobby.MAX_ROOMS_PER_LOBBY
+    stats.numFullRooms = lobby.fullRooms.size
+    stats.numAvailableRooms = lobby.availableRooms.size
+    stats.membersInAvailableRooms = 0
+    stats.membersInFullRooms = 0
+    if (lobby.availableRooms.size > 0) {
+        lobby.availableRooms.forEach(() => { stats.membersInAvailableRooms++ })
+    }
+    if (lobby.fullRooms.size > 0) {
+        lobby.fullRooms.forEach(() => { stats.membersInFullRooms++ })
+    }
+    stats.numOfConnectedClients = Object.keys(lobby.connectedClients).length
+    stats.membersStillInLobby = (stats.numOfConnectedClients - (stats.membersInAvailableRooms + stats.membersInFullRooms))
+    stats.lobbyOccupancy = ((1 - (lobby.rooms.size / lobby.MAX_ROOMS_PER_LOBBY)) * 100).toFixed(2) + '%'
+    return stats
 }
 
 module.exports.util = {
     joinOrCreateRoom,
     createRoom,
     joinRoom,
-    exitRoom
+    exitRoom,
+    getLobbyStats
 }
