@@ -32,12 +32,13 @@ const UDPClient = require('../models/UDPClient').UDPClient
  * @param  {string} playerName name of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
+ * @param  {Map} playerTags player custom tags sat by the client
  */
 function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags) {
-    if (lobby.availableRooms.length === 0) {
+    if (lobby.availableRooms.size === 0) {
         return createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags)
     } else {
-        return joinRoom(lobby, lobby.availableRooms[0].roomId, playerId, playerName, playerAvatar, playerTags)
+        return joinRoom(lobby, lobby.availableRooms.entries().next().value[0], playerId, playerName, playerAvatar, playerTags)
     }
 }
 /**
@@ -47,26 +48,26 @@ function joinOrCreateRoom(lobby, playerId, playerName, playerAvatar, maxPlayersP
  * @param  {string} playerName name of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
+ * @param  {Map} playerTags player custom tags sat by the client
  */
 function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom, playerTags) {
     let connection = lobby.getPlayerConnection(playerId)
-    if (connection === undefined){
+    if (connection === undefined) {
+        connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
         console.log('cannot find player connection')
         return
     }
-  
-    if (lobby.rooms.length === lobby.MAX_ROOMS_PER_LOBBY) {
+
+    if (lobby.rooms.size === lobby.MAX_ROOMS_PER_LOBBY) {
         connection.send(new events.NotificationEvent('create-room-faliure').convertToJSONString())
         console.log('Lobby reached maximum rooms threshold, Create room request failed')
         return undefined
     }
-    var newRoom = new Room(lobby.rooms.length, [], maxPlayersPerRoom)
+    var newRoom = new Room(maxPlayersPerRoom)
     newRoom.addPlayer(new Player(playerId, playerName, playerAvatar, 0, playerTags))
     lobby.addRoom(newRoom)
     var roomCreatedEvent = new events.RoomCreatedEvent(newRoom)
     connection.send(roomCreatedEvent.convertToJSONString())
-    var NotificationEvent = new events.NotificationEvent('new-room-created-in-lobby')
-    lobby.notifyLobbyMembers(NotificationEvent)
     roomId = newRoom.roomId
     return roomId
 }
@@ -79,14 +80,16 @@ function createRoom(lobby, playerId, playerName, playerAvatar, maxPlayersPerRoom
  * @param  {string} playerId unique player id assigned once the connection is established using uuid package
  * @param  {string} playerName  name of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
+ * @param  {Map} playerTags player custom tags sat by the client
  */
 function joinRoom(lobby, roomId, playerId, playerName, playerAvatar, playerTags) {
     var connection = lobby.getPlayerConnection(playerId)
-    if (lobby.availableRooms.length === 0) {
+    if (lobby.availableRooms.size === 0) {
+        console.log('No rooms available in the lobby, Failing the Join request')
         connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
         return undefined
     }
-    var room = lobby.getRoomById(roomId)
+    var room = lobby.rooms.get(roomId)
     if (room === undefined) {
         console.log('Room not found, Failing the Join request')
         connection.send(new events.NotificationEvent('join-room-faliure').convertToJSONString())
@@ -116,18 +119,25 @@ function joinRoom(lobby, roomId, playerId, playerName, playerAvatar, playerTags)
  * @param  {string} playerId unique player id assigned once the connection is established using uuid package
  */
 function exitRoom(lobby, roomId, playerId) {
-    var room = lobby.getRoomById(roomId)
+    var room = lobby.rooms.get(roomId)
     room.removePlayer(playerId)
     if (room.isEmpty()) {
+        console.log('Deleting room, since there is no players left in the room')
         lobby.removeRoom(roomId)
-        return undefined
+    }
+    else {
+        // add room to availableRooms list
+        // remove the room from fullRooms list
+        if (room.roomMembers.length < room.maxPlayersPerRoom) {
+            lobby.availableRooms.set(room.roomId, room)
+            lobby.fullRooms.delete(room.roomId)
+        }
+        //Notify remaining room members that a player left the room
+        room.broadcastGameFlowEvent(lobby, new events.RoomMemberLeftEvent(playerId))
     }
     //Notify the player that they left the room
     var connection = lobby.getPlayerConnection(playerId)
     connection.send(new events.NotificationEvent('left-room').convertToJSONString())
-
-    //Notify remaining room members that a player left the room
-    room.broadcastGameFlowEvent(lobby, new events.MemberLeftEvent(playerId))
     return undefined
 }
 
@@ -137,4 +147,3 @@ module.exports.util = {
     joinRoom,
     exitRoom
 }
-

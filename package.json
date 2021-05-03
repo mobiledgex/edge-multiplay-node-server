@@ -1,11 +1,11 @@
 {
   "name": "edge-multiplay",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "A sample server for matchmaking & a relay server for multiplayer experiences",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "npx nodemon server.js"
+    "start": "node app.js",
+    "test": "mocha --exit"
   },
   "keywords": [
     "unity",
@@ -18,6 +18,8 @@
   "author": "MobiledgeX",
   "license": "Apache-2.0",
   "dependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
     "uuidv4": "^6.0.6",
     "ws": "^7.2.3"
   },
