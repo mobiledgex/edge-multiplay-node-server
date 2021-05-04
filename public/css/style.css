@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    line-height: 1.6;
+    background-color: rgb(0, 0, 0);
+    background-image: url("../img/terrain-background-bright.svg");
+    background-attachment: fixed;
+    background-position-x: -20px;
+    background-attachment: -20px;
+    background-size: 120%;
+    box-sizing: border-box;
+    color: rgb(0, 0, 0);
+}
+
+ul {
+    /* No Bullets */
+    list-style-type: none;
+}
+
+a {
+    /* no url decoration */
+    text-decoration: none;
+    color: #333;
+}
+
+h1, h2 {
+    font-weight: 300;
+    line-height: 1.2;
+    margin: 10px 0;
+}
+
+p {
+    margin: 10px 0;
+}
+
+img {
+    width: 100%;
+}
+
+/* Navbar Styling */
+
+.navbar {
+    background-color: #273c4c88;
+    color: #fff;
+    height: 70px;
+    text-shadow: 2px 2px #252525;
+}
+
+.navbar ul {
+    display: flex;
+}
+
+.navbar a {
+    color: #fff;
+    padding: 10px;
+    margin: 0 5px;
+}
+
+.navbar a:hover {
+    border-bottom: 2px #fff solid;
+}
+
+.navbar .flex {
+    justify-content: space-between;
+}
+
+/* Stats */
+
+.stats {
+    padding-top: 100px;
+}
+
+.stats grid h3 {
+    font-size: 35px;
+}
+
+.stats grid p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Footer */
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: #273c4c88;
+    color: #fff;
+    text-shadow: 2px 2px #4e4d4d;
+}
+
+/* Margin */
+
+.my-4 {
+    margin: 3rem 0;
+}
+
+/* Utils */
+
+.text-primary {
+    text-shadow: 2px 2px 4px #01020183;
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+    background-color: black;
+    color: white;
+    transition: background-color 0.5s ease;
+}
+
+.hover-to-display:hover+.hide {
+    display: block;
+    color: rgb(255, 255, 255);
+    /* transition: width 2s, height 4s; */
+    transition-timing-function: ease-in-out;
+    transition: background-color 0.5s ease;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    overflow: auto;
+    padding: 0 40px;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 10px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Animations */
+
+.live-feed {
+    height: 10px;
+    width: 10px;
+    margin: 0 auto;
+    background-color: rgb(0, 255, 119);
+    animation-name: stretch;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+
+@keyframes stretch {
+    0% {
+        transform: scale(.3);
+        background-color: rgb(0, 255, 0);
+        border-radius: 100%;
+    }
+    50% {
+        background-color: rgb(195, 255, 0);
+    }
+    100% {
+        transform: scale(1);
+        background-color: rgb(0, 255, 0);
+        border-radius: 100%;
+    }
+}
+
+/*  Tablets and under */
+
+@media(max-width: 768px) {
+    .grid, .grid, .stats .grid, .grid {
+        grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile */
+
+@media(max-width: 500px) {
+    .navbar {
+        height: 110px;
+    }
+    .navbar .flex {
+        flex-direction: column;
+    }
+    .navbar ul {
+        padding: 10px;
+        background-color: rgba(39, 60, 76, 0.1);
+    }
+}
+
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: grey;
+    opacity: 1;
+    /* Firefox */
+}
