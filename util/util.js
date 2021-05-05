@@ -162,7 +162,6 @@ function getLobbyStats(lobby) {
     }
     stats.numOfConnectedClients = Object.keys(lobby.connectedClients).length
     stats.membersStillInLobby = (stats.numOfConnectedClients - (stats.membersInAvailableRooms + stats.membersInFullRooms))
-    stats.lobbyRoomsOccupancy = ((1 - (lobby.rooms.size / lobby.MAX_ROOMS_PER_LOBBY)) * 100).toFixed(2) + '%'
     return stats
 }
 
