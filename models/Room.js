@@ -45,17 +45,23 @@ class Room {
      */
     removePlayer(playerId) {
         var updatedRoomMembers, counter
-        this.udpConnections.delete(playerId)
-        this.roomMembers.forEach((roomMember, index, object) => {
-            if (roomMember.playerId === playerId) {
-                object.splice(index, 1)
-                updatedRoomMembers = object
+        try {
+            this.udpConnections.delete(playerId)
+            this.roomMembers.forEach((roomMember, index, object) => {
+                if (roomMember.playerId === playerId) {
+                    object.splice(index, 1)
+                    updatedRoomMembers = object
+                }
+            })
+            for (counter = 0; counter < updatedRoomMembers.length; counter++) {
+                updatedRoomMembers[counter].playerIndex = counter
             }
-        })
-        for (counter = 0; counter < updatedRoomMembers.length; counter++) {
-            updatedRoomMembers[counter].playerIndex = counter
+            this.roomMembers = updatedRoomMembers
         }
-        this.roomMembers = updatedRoomMembers
+        catch (error) {
+            console.log('error removing player from the room')
+            return false
+        }
     }
 
     isFull() {

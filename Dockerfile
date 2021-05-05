@@ -10,3 +10,4 @@ CMD node app.js
 
 EXPOSE 3000
 EXPOSE 5000/udp
+EXPOSE 7776
