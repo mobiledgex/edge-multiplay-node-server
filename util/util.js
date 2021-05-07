@@ -148,6 +148,7 @@ function exitRoom(lobby, roomId, playerId) {
 }
 
 function getLobbyStats(lobby) {
+    const statsEmitter = require('../server').statsEmitter
     var stats = {}
     stats.maxRoomsPerLobby = lobby.MAX_ROOMS_PER_LOBBY
     stats.numFullRooms = lobby.fullRooms.size
@@ -162,7 +163,7 @@ function getLobbyStats(lobby) {
     }
     stats.numOfConnectedClients = Object.keys(lobby.connectedClients).length
     stats.membersStillInLobby = (stats.numOfConnectedClients - (stats.membersInAvailableRooms + stats.membersInFullRooms))
-    return stats
+    statsEmitter.emit('updateStats', stats)
 }
 
 module.exports.util = {

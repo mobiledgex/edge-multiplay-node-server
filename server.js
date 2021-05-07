@@ -28,6 +28,7 @@
 
 const http = require('http')
 const WebSocket = require('ws')
+const EventEmitter = require('events')
 const url = require('url')
 const server = http.createServer()
 const wsServer = new WebSocket.Server({ noServer: true })
@@ -43,6 +44,7 @@ const path = require('path')
 const app = new express()
 const statsServer = require('http').createServer(app)
 const wsStatsServer = new WebSocket.Server({ server: statsServer })
+const statsEmitter = new EventEmitter()
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine('handlebars', ehbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
@@ -65,14 +67,13 @@ server.on('upgrade', function upgrade(request, socket, head) {
 wsServer.on('connection', function connection(ws, request) {
     console.log('num of rooms in the Lobby : ' + lobby.rooms.size)
     console.log('player Connected')
-
     let playerKey = request.headers['sec-websocket-key']
     let playerId = lobby.addPlayer(playerKey, ws)
     let roomId = ''
 
     console.log(`sending registerEvent to client`)
     ws.send(new events.RegisterEvent(playerId, playerKey).convertToJSONString())
-
+    util.getLobbyStats(lobby)
     ws.on('message', function (msgStr) {
         try {
             jsonObj = JSON.parse(msgStr)
@@ -81,7 +82,7 @@ wsServer.on('connection', function connection(ws, request) {
                     console.log('JoinOrCreateRoom Request received from client %o', jsonObj)
                     roomId = util.joinOrCreateRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
                     if (roomId !== undefined) {
-                        wsStatsServer.emit('updateStats')
+                        util.getLobbyStats(lobby)
                     }
                     break
                 case 'GetRooms':
@@ -102,21 +103,21 @@ wsServer.on('connection', function connection(ws, request) {
                     console.log('CreateRoom Request received from client %o', jsonObj)
                     roomId = util.createRoom(lobby, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.maxPlayersPerRoom, jsonObj.playerTags)
                     if (roomId !== undefined) {
-                        wsStatsServer.emit('updateStats')
+                        util.getLobbyStats(lobby)
                     }
                     break
                 case 'JoinRoom':
                     console.log('JoinRoom Request received from client %o', jsonObj)
                     roomId = util.joinRoom(lobby, jsonObj.roomId, jsonObj.playerId, jsonObj.playerName, jsonObj.playerAvatar, jsonObj.playerTags)
                     if (roomId !== undefined) {
-                        wsStatsServer.emit('updateStats')
+                        util.getLobbyStats(lobby)
                     }
                     break
                 case 'ExitRoom':
                     console.log('ExitRoom Request received from client %o', jsonObj)
                     exitRoomSuccess = util.exitRoom(lobby, jsonObj.roomId, jsonObj.playerId)
                     if (exitRoomSuccess === true) {
-                        wsStatsServer.emit('updateStats')
+                        util.getLobbyStats(lobby)
                     }
                     break
                 case 'GamePlayEvent':
@@ -144,24 +145,24 @@ wsServer.on('connection', function connection(ws, request) {
         console.log(`member left, member uuid : ${playerId}, roomId : ${roomId}`)
         // remove member from room
         var room = lobby.rooms.get(roomId)
+        // remove player connection
+        lobby.removePlayer(playerId)
         if (room === undefined) {
-            wsStatsServer.emit('updateStats')
+            util.getLobbyStats(lobby)
             return
         }
         room.removePlayer(playerId)
-        // remove player connection 
-        lobby.removePlayer(playerId)
         // delete room if empty
         if (room.isEmpty()) {
             lobby.removeRoom(roomId)
-            wsStatsServer.emit('updateStats')
+            util.getLobbyStats(lobby)
             return
         }
         lobby.fullRooms.delete(roomId)
         lobby.availableRooms.set(roomId, room)
         // if room is not empty, notify other roomMembers that a player left
         room.broadcastGameFlowEvent(lobby, new events.RoomMemberLeftEvent(playerId))
-        wsStatsServer.emit('updateStats')
+        util.getLobbyStats(lobby)
         return
     })
 })
@@ -239,14 +240,9 @@ statsServer.listen(STATS_PORT, () => {
     console.log(`Stats server listening on ${STATS_PORT}`)
 })
 
-wsStatsServer.on('connection', (ws) => {
+wsStatsServer.on('connection', () => {
     setImmediate(() => {
-        wsStatsServer.emit('updateStats');
-    });
-    wsStatsServer.on('updateStats', () => {
-        var stats = util.getLobbyStats(lobby)
-        var statsStr = JSON.stringify(stats)
-        ws.send(statsStr)
+        util.getLobbyStats(lobby)
     })
 })
 
@@ -257,5 +253,14 @@ app.get('/', (req, res) => {
         })
 })
 
+function broadcastStats(stats) {
+    wsStatsServer.clients.forEach((client) => {
+        var statsStr = JSON.stringify(stats)
+        client.send(statsStr)
+    })
+}
+
+statsEmitter.on('updateStats', broadcastStats);
+
 //create a server object:
-module.exports = { statsServer, wsServer, udpServer, lobby, addToLobby, rejectConnection }
+module.exports = { statsEmitter, wsServer, udpServer, lobby, addToLobby, rejectConnection }
