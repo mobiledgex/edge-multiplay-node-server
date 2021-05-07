@@ -1,7 +1,7 @@
 region: EU
 app: 
   key: 
-    name: EdgeMultiplay-Deploy
+    name: EdgeMultiplay
     version: 1.2
     organization: MobiledgeX-Samples
   image_path: docker.mobiledgex.net/mobiledgex-samples/images/edge-multiplay
@@ -9,4 +9,4 @@ app:
   deployment: docker
   default_flavor: 
     name: m4.small
-  access_ports: "tcp:3000,udp:5000"
+  access_ports: "tcp:3000,tcp:7776,udp:5000"
