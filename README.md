@@ -54,7 +54,7 @@ docker pull mobiledgexsamples/edge-multiplay
 ```
 
 ```
-docker run -d -p 3000:3000 -p 5000:5000/udp mobiledgexsamples/edge-multiplay
+docker run -d -p 3000:3000 -p 7776:7776 -p 5000:5000/udp mobiledgexsamples/edge-multiplay
 ```
 
 
