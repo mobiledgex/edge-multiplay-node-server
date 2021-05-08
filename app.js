@@ -6,3 +6,5 @@ edgeMultiplay.wsServer.on('newConnection',(path, connection)=>{
     //you can check for the path here and reject the connection if the path is not correct
     // edgeMultiplay.rejectConnection(connection)
 })
+
+module.exports = {edgeMultiplay}
