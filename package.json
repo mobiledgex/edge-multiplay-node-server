@@ -1,6 +1,6 @@
 {
   "name": "edge-multiplay",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A sample server for matchmaking & a relay server for multiplayer experiences",
   "main": "server.js",
   "scripts": {
