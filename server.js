@@ -45,9 +45,31 @@ const app = new express()
 const statsServer = require('http').createServer(app)
 const wsStatsServer = new WebSocket.Server({ server: statsServer })
 const statsEmitter = new EventEmitter()
-app.use(express.static(path.join(__dirname, 'public')));
-app.engine('handlebars', ehbs({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
+
+if (require.main === module) {//the script runs directly
+    app.use(express.static(path.join(__dirname, 'public')))
+    app.set('views', path.join(__dirname, 'views'))
+    app.engine('handlebars', ehbs({ defaultLayout: 'main' }));
+} else { // the script runs as a module
+    try {
+        // edge-multiplay is used as npm mpdule
+        var pathToModule = require.resolve('edge-multiplay')
+    }
+    catch (err) {
+        // edge-multiplay is used as docker image or from the repo
+        var pathToModule = require.resolve('./server.js')
+    }
+    pathToModule = path.resolve(pathToModule, '..')
+    app.use(express.static(path.join(pathToModule, 'public')))
+    app.set('views', path.join(pathToModule, 'views'))
+    app.engine('.handlebars', ehbs({
+        defaultLayout: 'main',
+        extname: '.handlebars',
+        layoutsDir: path.join(pathToModule, 'views/layouts'),
+        partialsDir: path.join(pathToModule, 'views')
+    }));
+    app.set('view engine', '.handlebars')
+}
 const MAX_ROOMS_PER_LOBBY = 10
 const TCP_PORT = 3000
 const UDP_PORT = 5000
