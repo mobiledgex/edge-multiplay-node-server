@@ -105,3 +105,6 @@ dist
 
 #MAC Store
 .DS_Store
+
+#VSCode settings
+.vscode

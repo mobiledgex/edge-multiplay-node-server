@@ -17,7 +17,7 @@
 
 /**
  * Class representing the Player.
- * 
+ *
  */
 class Player {
     /**
@@ -28,13 +28,13 @@ class Player {
      * @param  {integer} playerIndex the order of the player in the room
      * @param  {object} playerTags KeyValue Pair Array of custom data associated with the player
      */
-    constructor(playerId, playerName, playerAvatar, playerIndex, playerTags) {
-        this.playerId = playerId
-        this.playerName = playerName
-        this.playerAvatar = playerAvatar
-        this.playerIndex = playerIndex
-        this.playerTags = playerTags
+    constructor (playerId, playerName, playerAvatar, playerIndex, playerTags) {
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.playerAvatar = playerAvatar;
+        this.playerIndex = playerIndex;
+        this.playerTags = playerTags;
     }
 }
 
-module.exports.Player = Player
+module.exports.Player = Player;
