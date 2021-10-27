@@ -178,9 +178,8 @@ describe("Default Tests", function () {
     expect(
       edgeMultiplay.lobby.rooms.get(roomId).udpConnections.size
     ).equal(1);
-    done();
     edgeMultiplay.wsServer.clients.forEach((client) => {
-      client.terminate();
+      client.close();
     });
     setTimeout(() => {
       expect(edgeMultiplay.lobby.rooms.size).equal(0);
@@ -188,15 +187,56 @@ describe("Default Tests", function () {
       expect(edgeMultiplay.lobby.fullRooms.size).equal(0);
       expect(edgeMultiplay.lobby.availableRooms.size).equal(0);
       done();
-    }, 500);
-
-    it("Test start game with min players and allow other players to join till the room is full", (done) => {
-      let player1Connection, player2Connection, player3Connection, player4Connection, lastServerEvent;
-      player1Connection = new WebSocket("ws://localhost:3000");
-      player1Connection.onopen = function () {
-        console.log("client 1 is open");
+    }, 200);
+  });
+  it("Test start game with min players and allow other players to join till the room is full", (done) => {
+    let player1Connection, player2Connection, player3Connection, player4Connection, lastServerEvent;
+    player1Connection = new WebSocket("ws://localhost:3000");
+    player1Connection.onopen = function () {
+      console.log("client 1 is open");
+    };
+    player1Connection.onmessage = function (e) {
+      var jsonObj = JSON.parse(e.data);
+      switch (jsonObj.type) {
+        case "register":
+          expect(jsonObj.playerId).to.be.string;
+          var playerKey = edgeMultiplay.lobby.nameMap[jsonObj.playerId];
+          expect(playerKey).not.undefined;
+          var playerConnection =
+            edgeMultiplay.lobby.connectedClients[playerKey];
+          expect(playerConnection.address).equal(player1Connection.address);
+          expect(playerConnection.port).equal(player1Connection.port);
+          // create room
+          createReq = client_util.createRoomRequest(
+            "Player1",
+            jsonObj.playerId,
+            0,
+            3,
+            2,
+          );
+          player1Connection.send(JSON.stringify(createReq));
+          break;
+        case "notification":
+          expect(jsonObj.notificationText).equal("new-room-created-in-lobby");
+          break;
+        case "roomCreated":
+          roomId = jsonObj.room.roomId;
+          var room = jsonObj.room;
+          console.log({ room });
+          expect(roomId).to.be.string;
+          break;
+        case "gameStart":
+          expect(jsonObj.room.roomMembers.length).equal(2);
+          expect(jsonObj.room.roomMembers[1].playerName).equal('Player2');
+          break;
+      }
+    };
+    setTimeout(() => {
+      player2Connection = new WebSocket("ws://localhost:3000");
+      player2Connection.onopen = function () {
+        console.log("client 2 is open");
       };
-      player1Connection.onmessage = function (e) {
+      player2Connection.onmessage = function (e) {
         var jsonObj = JSON.parse(e.data);
         switch (jsonObj.type) {
           case "register":
@@ -205,202 +245,157 @@ describe("Default Tests", function () {
             expect(playerKey).not.undefined;
             var playerConnection =
               edgeMultiplay.lobby.connectedClients[playerKey];
-            expect(playerConnection.address).equal(player1Connection.address);
-            expect(playerConnection.port).equal(player1Connection.port);
+            expect(playerConnection.address).equal(player2Connection.address);
+            expect(playerConnection.port).equal(player2Connection.port);
+
             // create room
-            createReq = client_util.createRoomRequest(
-              "Player1",
+            var joinRoomReq = client_util.joinRoomRequest(
+
+              roomId,
+              "Player2",
               jsonObj.playerId,
               0,
-              3,
-              2,
             );
-            player1Connection.send(JSON.stringify(createReq));
+            console.log({ joinRoomReq });
+            player2Connection.send(JSON.stringify(joinRoomReq));
             break;
-          case "notification":
-            expect(jsonObj.notificationText).equal("new-room-created-in-lobby");
-            break;
-          case "roomCreated":
-            roomId = jsonObj.room.roomId;
-            var room = jsonObj.room;
-            console.log({ room });
-            expect(roomId).to.be.string;
+          case "roomJoin":
+            expect(jsonObj.room.roomMembers.length).equal(2);
+
             break;
           case "gameStart":
             expect(jsonObj.room.roomMembers.length).equal(2);
-            expect(jsonObj.room.roomMembers[1].playerName).equal('Player2');
+            expect(jsonObj.room.roomMembers[0].playerName).equal("Player1");
+            expect(jsonObj.room.gameStarted);
+            break;
+          case "playerJoinedRoom":
+            expect(jsonObj.room.roomMembers.length).equal(3);
+            expect(jsonObj.room.roomMembers[2].playerName).equal("Player3");
+            break;
+          case "GamePlayEvent":
+            expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
             break;
         }
       };
-      setTimeout(() => {
-        player2Connection = new WebSocket("ws://localhost:3000");
-        player2Connection.onopen = function () {
-          console.log("client 2 is open");
-        };
-        player2Connection.onmessage = function (e) {
-          var jsonObj = JSON.parse(e.data);
-          switch (jsonObj.type) {
-            case "register":
-              expect(jsonObj.playerId).to.be.string;
-              var playerKey = edgeMultiplay.lobby.nameMap[jsonObj.playerId];
-              expect(playerKey).not.undefined;
-              var playerConnection =
-                edgeMultiplay.lobby.connectedClients[playerKey];
-              expect(playerConnection.address).equal(player2Connection.address);
-              expect(playerConnection.port).equal(player2Connection.port);
-
-              // create room
-              var joinRoomReq = client_util.joinRoomRequest(
-
-                roomId,
-                "Player2",
-                jsonObj.playerId,
-                0,
-              );
-              console.log({ joinRoomReq });
-              player2Connection.send(JSON.stringify(joinRoomReq));
-              break;
-            case "roomJoin":
-              expect(jsonObj.room.roomMembers.length).equal(2);
-
-              break;
-            case "gameStart":
-              expect(jsonObj.room.roomMembers.length).equal(2);
-              expect(jsonObj.room.roomMembers[0].playerName).equal("Player1");
-              expect(jsonObj.room.gameStarted);
-              break;
-            case "playerJoinedRoom":
-              expect(jsonObj.room.roomMembers.length).equal(3);
-              expect(jsonObj.room.roomMembers[2].playerName).equal("Player3");
-              break;
-            case "GamePlayEvent":
-              expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
-              break;
-          }
-        };
-        player2Connection.onclose = (e) => {
-          console.log(`player2Connection is closed`);
-          expect(e.wasClean).equal(true);
-        };
-      }, 100);
-      setTimeout(() => {
-        player3Connection = new WebSocket("ws://localhost:3000");
-        player3Connection.onopen = function () {
-          console.log("client 3 is open");
-        };
-        player3Connection.onmessage = function (e) {
-          var jsonObj = JSON.parse(e.data);
-          switch (jsonObj.type) {
-            case "register":
-              expect(jsonObj.playerId).to.be.string;
-              var playerKey = edgeMultiplay.lobby.nameMap[jsonObj.playerId];
-              expect(playerKey).not.undefined;
-              var playerConnection =
-                edgeMultiplay.lobby.connectedClients[playerKey];
-              expect(playerConnection.address).equal(player3Connection.address);
-              expect(playerConnection.port).equal(player3Connection.port);
-
-              // create room
-              var joinRoomReq = client_util.joinRoomRequest(
-                roomId,
-                "Player3",
-                jsonObj.playerId,
-                0,
-              );
-              player3Connection.send(JSON.stringify(joinRoomReq));
-              break;
-            case "roomJoin":
-              expect(jsonObj.room.roomMembers.length).equal(3);
-              expect(jsonObj.room.gameStarted).equal(true);
-              break;
-            case "GamePlayEvent":
-              expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
-              break;
-          }
-        };
-      }, 200);
-      setTimeout(() => {
-        player4Connection = new WebSocket("ws://localhost:3000");
-        player4Connection.onopen = function () {
-          console.log("client 4 is open");
-        };
-        player4Connection.onmessage = function (e) {
-          var jsonObj = JSON.parse(e.data);
-          lastServerEvent = jsonObj;
-          console.log({ jsonObj });
-          switch (jsonObj.type) {
-            case "register":
-              expect(jsonObj.playerId).to.be.string;
-              var playerKey = edgeMultiplay.lobby.nameMap[jsonObj.playerId];
-              expect(playerKey).not.undefined;
-              var playerConnection =
-                edgeMultiplay.lobby.connectedClients[playerKey];
-              expect(playerConnection.address).equal(player4Connection.address);
-              expect(playerConnection.port).equal(player4Connection.port);
-              // create room
-              var joinRoomReq = client_util.joinRoomRequest(
-                roomId,
-                "Player4",
-                jsonObj.playerId,
-                0,
-              );
-              player4Connection.send(JSON.stringify(joinRoomReq));
-              break;
-            case "notification":
-              expect(jsonObj.notificationText).equal('join-room-faliure');
-              player2Connection.close();
-              break;
-            case "GamePlayEvent":
-              expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
-              break;
-          }
-        };
-      }, 300);
-      setTimeout(() => {
-        if (player4Connection !== undefined) {
-          var joinRoomReq = client_util.joinRoomRequest(
-            roomId,
-            "Player4",
-            jsonObj.playerId,
-            0,
-          );
-          player4Connection.send(JSON.stringify(joinRoomReq));
-          setTimeout(() => {
-            expect(lastServerEvent.type).equal('roomJoin');
-          }, 200);
-        }
-        else {
-          console.error('player4Connection didnt start yet');
-        }
-      }, 500);
-      setTimeout(() => {
-        if (player1Connection !== undefined) {
-          player1Connection.close();
-        }
-        if (player3Connection !== undefined) {
-          player3Connection.close();
-        }
-        setTimeout(() => {
-          var room = edgeMultiplay.lobby.rooms.get(roomId);
-          expect(room.gameStarted).equal(false);
-          done();
-        }, 100);
-      }, 600);
-    });
-
-    it("Clean Up", (done) => {
-      edgeMultiplay.wsServer.clients.forEach((client) => {
-        client.close();
-      });
-      edgeMultiplay.wsServer.close((error) => {
-        if (error !== undefined) {
-          console.log("Error closing the server, Error: " + error.toString());
-        }
-        done();
-      });
-    });
+      player2Connection.onclose = (e) => {
+        console.log(`player2Connection is closed`);
+        expect(e.wasClean).equal(true);
+      };
+    }, 100);
     setTimeout(() => {
+      player3Connection = new WebSocket("ws://localhost:3000");
+      player3Connection.onopen = function () {
+        console.log("client 3 is open");
+      };
+      player3Connection.onmessage = function (e) {
+        var jsonObj = JSON.parse(e.data);
+        switch (jsonObj.type) {
+          case "register":
+            expect(jsonObj.playerId).to.be.string;
+            var playerKey = edgeMultiplay.lobby.nameMap[jsonObj.playerId];
+            expect(playerKey).not.undefined;
+            var playerConnection =
+              edgeMultiplay.lobby.connectedClients[playerKey];
+            expect(playerConnection.address).equal(player3Connection.address);
+            expect(playerConnection.port).equal(player3Connection.port);
 
-    }, 1000);
+            // create room
+            var joinRoomReq = client_util.joinRoomRequest(
+              roomId,
+              "Player3",
+              jsonObj.playerId,
+              0,
+            );
+            player3Connection.send(JSON.stringify(joinRoomReq));
+            break;
+          case "roomJoin":
+            expect(jsonObj.room.roomMembers.length).equal(3);
+            expect(jsonObj.room.gameStarted).equal(true);
+            break;
+          case "GamePlayEvent":
+            expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
+            break;
+        }
+      };
+    }, 200);
+    setTimeout(() => {
+      player4Connection = new WebSocket("ws://localhost:3000");
+      player4Connection.onopen = function () {
+        console.log("client 4 is open");
+      };
+      player4Connection.onmessage = function (e) {
+        var jsonObj = JSON.parse(e.data);
+        lastServerEvent = jsonObj;
+        console.log({ jsonObj });
+        switch (jsonObj.type) {
+          case "register":
+            expect(jsonObj.playerId).to.be.string;
+            var playerKey = edgeMultiplay.lobby.nameMap[jsonObj.playerId];
+            expect(playerKey).not.undefined;
+            var playerConnection =
+              edgeMultiplay.lobby.connectedClients[playerKey];
+            expect(playerConnection.address).equal(player4Connection.address);
+            expect(playerConnection.port).equal(player4Connection.port);
+            // create room
+            var joinRoomReq = client_util.joinRoomRequest(
+              roomId,
+              "Player4",
+              jsonObj.playerId,
+              0,
+            );
+            player4Connection.send(JSON.stringify(joinRoomReq));
+            break;
+          case "notification":
+            expect(jsonObj.notificationText).equal('join-room-faliure');
+            player2Connection.close();
+            break;
+          case "GamePlayEvent":
+            expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
+            break;
+        }
+      };
+    }, 300);
+    setTimeout(() => {
+      if (player4Connection !== undefined) {
+        var joinRoomReq = client_util.joinRoomRequest(
+          roomId,
+          "Player4",
+          jsonObj.playerId,
+          0,
+        );
+        player4Connection.send(JSON.stringify(joinRoomReq));
+        setTimeout(() => {
+          expect(lastServerEvent.type).equal('roomJoin');
+        }, 400);
+      }
+      else {
+        console.error('player4Connection didnt start yet');
+      }
+    }, 500);
+    setTimeout(() => {
+      if (player1Connection !== undefined) {
+        player1Connection.close();
+      }
+      if (player3Connection !== undefined) {
+        player3Connection.close();
+      }
+      setTimeout(() => {
+        var room = edgeMultiplay.lobby.rooms.get(roomId);
+        expect(room.gameStarted).equal(false);
+        done();
+      }, 100);
+    }, 600);
+  });
+
+  it("Clean Up", (done) => {
+    edgeMultiplay.wsServer.clients.forEach((client) => {
+      client.close();
+    });
+    edgeMultiplay.wsServer.close((error) => {
+      if (error !== undefined) {
+        console.log("Error closing the server, Error: " + error.toString());
+      }
+      done();
+    });
   });
 });
