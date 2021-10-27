@@ -212,6 +212,41 @@ class GamePlayEvent extends Event {
     this.floatData = floatData;
     this.booleanData = booleanData;
   }
+  static [Symbol.hasInstance] (obj) {
+    if (obj.type !== "GamePlayEvent") {
+      console.error("wrong event type");
+      return false;
+    }
+    if (obj.senderId === "") {
+      console.error("missing senderId");
+      return false;
+    }
+    if (obj.roomId === "") {
+      console.error("missing room id");
+      return false;
+    }
+    if (obj.eventName === "") {
+      console.error("missing event name");
+      return false;
+    }
+    if (typeof (obj.stringData) === Array) {
+      console.error("stringData is not an array");
+      return false;
+    }
+    if (typeof (obj.floatData) === Array) {
+      console.error("floatData is not an array");
+      return false;
+    }
+    if (typeof (obj.integerData) === Array) {
+      console.error("integerData is not an array");
+      return false;
+    }
+    if (typeof (obj.booleanData) === Array) {
+      console.error("booleanData is not an array");
+      return false;
+    }
+    return true;
+  }
 }
 module.exports.Events = {
   RegisterEvent,

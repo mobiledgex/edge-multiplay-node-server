@@ -32,6 +32,7 @@ const UDPClient = require("../models/UDPClient").UDPClient;
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
  * @param  {Map} playerTags player custom tags sat by the client
+ * @param  {integer} minPlayersToStartGame minimum players to start the game, more players can join afterwards as long as the number of players in a room is less than maxPlayersPerRoom, when minPlayersToStartGame is less than 2 minPlayersToStartGame will be equal maxPlayersPerRoom 
  */
 function joinOrCreateRoom (
     lobby,
@@ -39,7 +40,8 @@ function joinOrCreateRoom (
     playerName,
     playerAvatar,
     maxPlayersPerRoom,
-    playerTags
+    playerTags,
+    minPlayersToStartGame = 0
 ) {
     if (lobby.availableRooms.size === 0) {
         return createRoom(
@@ -48,7 +50,8 @@ function joinOrCreateRoom (
             playerName,
             playerAvatar,
             maxPlayersPerRoom,
-            playerTags
+            playerTags,
+            minPlayersToStartGame,
         );
     } else {
         return joinRoom(
@@ -69,6 +72,7 @@ function joinOrCreateRoom (
  * @param  {integer} playerAvatar the avatar of the player sat by the client on JoinRoomRequest or the CreateRoomRequest
  * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
  * @param  {Map} playerTags player custom tags sat by the client
+ * @param  {integer} minPlayersToStartGame minimum players to start the game, more players can join afterwards as long as the number of players in a room is less than maxPlayersPerRoom, when minPlayersToStartGame is less than 2 minPlayersToStartGame will be equal maxPlayersPerRoom  
  */
 function createRoom (
     lobby,
@@ -76,13 +80,11 @@ function createRoom (
     playerName,
     playerAvatar,
     maxPlayersPerRoom,
-    playerTags
+    playerTags,
+    minPlayersToStartGame = 0
 ) {
     let connection = lobby.getPlayerConnection(playerId);
     if (connection === undefined) {
-        connection.send(
-            new events.NotificationEvent("create-room-faliure").convertToJSONString()
-        );
         console.log("cannot find player connection");
         return undefined;
     }
@@ -96,7 +98,7 @@ function createRoom (
         );
         return undefined;
     }
-    var newRoom = new Room(maxPlayersPerRoom);
+    var newRoom = new Room(maxPlayersPerRoom, minPlayersToStartGame);
     newRoom.addPlayer(
         new Player(playerId, playerName, playerAvatar, 0, playerTags)
     );
@@ -154,13 +156,17 @@ function joinRoom (
         playerTags
     );
     room.addPlayer(newPlayer);
-    console.log("Member Joined Room");
+    console.log("Member Joined Room", { newPlayer });
     connection.send(new events.RoomJoinEvent(room).convertToJSONString());
     var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room);
     room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId);
+    // send game start event if game didn't start yet
+    if (room.isReadyToStartGame()) {
+        room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room));
+    }
+    // if room is full mark room notify lobby
     if (room.isFull()) {
         lobby.markRoomAsFull(room);
-        room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room));
     }
     return roomId;
 }

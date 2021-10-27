@@ -36,11 +36,11 @@ const dgram = require("dgram");
 const udpServer = dgram.createSocket("udp4");
 const Lobby = require("./models/Lobby").Lobby;
 const UDPClient = require("./models/UDPClient").UDPClient;
-const events = require("./models/Events").Events;
 const util = require("./util/util").util;
 const express = require("express");
 const ehbs = require("express-handlebars");
 const path = require("path");
+const { Events } = require("./models/Events");
 const app = new express();
 const statsServer = require("http").createServer(app);
 const wsStatsServer = new WebSocket.Server({ server: statsServer });
@@ -102,7 +102,7 @@ function startEdgeMultiplay () {
 
     console.log(`sending registerEvent to client`);
     ws.send(
-      new events.RegisterEvent(playerId, playerKey).convertToJSONString()
+      new Events.RegisterEvent(playerId, playerKey).convertToJSONString()
     );
     util.getLobbyStats(lobby);
     ws.on("message", function (msgStr) {
@@ -120,7 +120,8 @@ function startEdgeMultiplay () {
               jsonObj.playerName,
               jsonObj.playerAvatar,
               jsonObj.maxPlayersPerRoom,
-              jsonObj.playerTags
+              jsonObj.playerTags,
+              jsonObj.minPlayersToStartGame,
             );
             if (roomId !== undefined) {
               util.getLobbyStats(lobby);
@@ -130,7 +131,7 @@ function startEdgeMultiplay () {
             console.log("GetRooms Request received from client %o", jsonObj);
             var connection = lobby.getPlayerConnection(playerId);
             var roomsArray = Array.from(lobby.rooms, ([, room]) => room);
-            var roomsListEvent = new events.RoomsListEvent(
+            var roomsListEvent = new Events.RoomsListEvent(
               roomsArray
             ).convertToJSONString();
             connection.send(roomsListEvent);
@@ -145,7 +146,7 @@ function startEdgeMultiplay () {
               lobby.availableRooms,
               ([, room]) => room
             );
-            var availableRoomsListEvent = new events.AvailableRoomsListEvent(
+            var availableRoomsListEvent = new Events.AvailableRoomsListEvent(
               availableRoomsArray
             ).convertToJSONString();
             connection.send(availableRoomsListEvent);
@@ -158,7 +159,8 @@ function startEdgeMultiplay () {
               jsonObj.playerName,
               jsonObj.playerAvatar,
               jsonObj.maxPlayersPerRoom,
-              jsonObj.playerTags
+              jsonObj.playerTags,
+              jsonObj.minPlayersToStartGame,
             );
             if (roomId !== undefined) {
               util.getLobbyStats(lobby);
@@ -203,7 +205,7 @@ function startEdgeMultiplay () {
         }
       } catch (err) {
         ws.send(
-          new events.NotificationEvent("parsing-error").convertToJSONString()
+          new Events.NotificationEvent("parsing-error").convertToJSONString()
         );
         console.log("Error parsing received message \n" + err);
       }
@@ -235,7 +237,7 @@ function startEdgeMultiplay () {
       // if room is not empty, notify other roomMembers that a player left
       room.broadcastGameFlowEvent(
         lobby,
-        new events.RoomMemberLeftEvent(playerId)
+        new Events.RoomMemberLeftEvent(playerId)
       );
       util.getLobbyStats(lobby);
       return;
@@ -251,6 +253,11 @@ function startEdgeMultiplay () {
     try {
       var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString();
       var jsonObj = JSON.parse(gameplayEventStr);
+      if (jsonObj instanceof Events.GamePlayEvent === false) {
+        console.log("Received unkonw event", jsonObj);
+        console.log("Received unkonw event", Events.GamePlayEvent);
+        throw new Error(`Can't parse udp message, UDP server is allowed to receive GamePlayEvents only but received ${{ jsonObj }}`);
+      }
       var roomId = jsonObj.roomId;
       var senderId = jsonObj.senderId;
       var room = lobby.rooms.get(roomId);
