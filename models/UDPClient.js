@@ -26,10 +26,10 @@ class UDPClient {
      * @param  {integer} port udp port
      * @param {string} playerId unique player id assigned once the connection is established using uuid package
      */
-    constructor(address, port, playerId) {
-        this.address = address
-        this.port = port
-        this.playerId = playerId
+    constructor (address, port, playerId) {
+        this.address = address;
+        this.port = port;
+        this.playerId = playerId;
     }
 }
-module.exports.UDPClient = UDPClient
+module.exports.UDPClient = UDPClient;
