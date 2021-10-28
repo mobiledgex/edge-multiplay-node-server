@@ -217,6 +217,8 @@ function startEdgeMultiplay () {
 
     ws.on("close", () => {
       console.log(`member left, member uuid : ${playerId}, roomId : ${roomId}`);
+      var roomsUpdatedNotification = new Events.NotificationEvent("rooms-updated");
+      lobby.notifyLobbyMembers(roomsUpdatedNotification);
       // remove member from room
       var room = lobby.rooms.get(roomId);
       // remove player connection

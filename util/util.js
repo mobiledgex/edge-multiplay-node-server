@@ -41,7 +41,7 @@ function joinOrCreateRoom (
     playerAvatar,
     maxPlayersPerRoom,
     playerTags,
-    minPlayersToStartGame = 0
+    minPlayersToStartGame,
 ) {
     if (lobby.availableRooms.size === 0) {
         return createRoom(
@@ -81,7 +81,7 @@ function createRoom (
     playerAvatar,
     maxPlayersPerRoom,
     playerTags,
-    minPlayersToStartGame = 0
+    minPlayersToStartGame,
 ) {
     let connection = lobby.getPlayerConnection(playerId);
     if (connection === undefined) {
@@ -168,6 +168,8 @@ function joinRoom (
     if (room.isFull()) {
         lobby.markRoomAsFull(room);
     }
+    var roomsUpdatedNotification = new events.NotificationEvent("rooms-updated");
+    lobby.notifyLobbyMembers(roomsUpdatedNotification);
     return roomId;
 }
 /**
@@ -208,6 +210,8 @@ function exitRoom (lobby, roomId, playerId) {
     connection.send(
         new events.NotificationEvent("left-room").convertToJSONString()
     );
+    var roomsUpdatedNotification = new events.NotificationEvent("rooms-updated");
+    lobby.notifyLobbyMembers(roomsUpdatedNotification);
     return true;
 }
 
