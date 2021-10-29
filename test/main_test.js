@@ -192,7 +192,7 @@ describe("Default Tests", function () {
       expect(edgeMultiplay.lobby.fullRooms.size).equal(0);
       expect(edgeMultiplay.lobby.availableRooms.size).equal(0);
       done();
-    }, 200);
+    }, 300);
   });
   it("Test start game with min players and allow other players to join till the room is full", (done) => {
     let player1Connection, player2Connection, player3Connection, player4Connection, lastServerEvent;
