@@ -27,7 +27,7 @@ class Room {
      * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
      * @param  {integer} minPlayersToStartGame minimum players to start the game, more players can join afterwards as long as the number of players in a room is less than maxPlayersPerRoom, when minPlayersToStartGame is less than 2 minPlayersToStartGame will be equal maxPlayersPerRoom 
      */
-    constructor (maxPlayersPerRoom, minPlayersToStartGame) {
+    constructor (maxPlayersPerRoom, minPlayersToStartGame = 0) {
         this.roomId = uuidv4();
         this.roomMembers = [];
         this.minPlayersToStartGame = minPlayersToStartGame < 2 ? maxPlayersPerRoom : minPlayersToStartGame;

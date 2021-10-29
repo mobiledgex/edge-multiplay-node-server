@@ -38,7 +38,9 @@ describe("Default Tests", function () {
           ws.send(JSON.stringify(createReq));
           break;
         case "notification":
-          expect(jsonObj.notificationText).equal("new-room-created-in-lobby");
+          expect(jsonObj.notificationText === "new-room-created-in-lobby" ||
+            jsonObj.notificationText === "rooms-updated"
+          ).equal(true);
           break;
 
         case "roomCreated":
@@ -103,26 +105,29 @@ describe("Default Tests", function () {
               done();
             }, 100);
           }
-          break;
-        case "gameStart":
-          var exitRoomReq = {};
-          exitRoomReq.type = "ExitRoom";
-          exitRoomReq.roomId = roomId;
-          exitRoomReq.playerId = player2Id;
-          ws2.send(JSON.stringify(exitRoomReq));
+          else {
+            var exitRoomReq = {};
+            exitRoomReq.type = "ExitRoom";
+            exitRoomReq.roomId = roomId;
+            exitRoomReq.playerId = player2Id;
+            ws2.send(JSON.stringify(exitRoomReq));
+          }
           break;
         case "notification":
-          expect(jsonObj.notificationText).equal("left-room");
-          expect(edgeMultiplay.lobby.rooms.size).equal(1);
-          expect(edgeMultiplay.lobby.availableRooms.size).equal(1);
-          expect(edgeMultiplay.lobby.fullRooms.size).equal(0);
-          var joinRoomAgain = client_util.joinOrCreateRoomRequest(
-            "Player2-repeat",
-            player2Id,
-            0,
-            2
-          );
-          ws2.send(JSON.stringify(joinRoomAgain));
+          expect(jsonObj.notificationText === "rooms-updated" ||
+            jsonObj.notificationText === "left-room").equal(true);
+          if (jsonObj.notificationText === "left-room") {
+            expect(edgeMultiplay.lobby.rooms.size).equal(1);
+            expect(edgeMultiplay.lobby.availableRooms.size).equal(1);
+            expect(edgeMultiplay.lobby.fullRooms.size).equal(0);
+            var joinRoomAgain = client_util.joinOrCreateRoomRequest(
+              "Player2-repeat",
+              player2Id,
+              0,
+              2
+            );
+            ws2.send(JSON.stringify(joinRoomAgain));
+          }
           break;
       }
     };
@@ -156,19 +161,19 @@ describe("Default Tests", function () {
           expect(edgeMultiplay.lobby.availableRooms.size).equal(0);
           expect(edgeMultiplay.lobby.fullRooms.size).equal(1);
           expect(jsonObj.room.roomMembers.length).equal(2);
-          break;
-        case "gameStart":
-          var gamePlayEvent = new Events.GamePlayEvent(
-            roomId, player3Id, "testing", ["t", "e", "s", "t", "test"],
-            [1, 2, 3, 5], [1.5, 2, 3, 5.5], [true, false, false, true]
-          );
-          gamePlayEventStr = JSON.stringify(gamePlayEvent);
-          ws3.send(gamePlayEventStr);
-          const message = Buffer.from(gamePlayEventStr);
-          const udpClient = dgram.createSocket("udp4");
-          udpClient.send(message, 5000, "localhost", (err) => {
-          });
-          done();
+          if (jsonObj.room.gameStarted) {
+            var gamePlayEvent = new Events.GamePlayEvent(
+              roomId, player3Id, "testing", ["t", "e", "s", "t", "test"],
+              [1, 2, 3, 5], [1.5, 2, 3, 5.5], [true, false, false, true]
+            );
+            gamePlayEventStr = JSON.stringify(gamePlayEvent);
+            ws3.send(gamePlayEventStr);
+            const message = Buffer.from(gamePlayEventStr);
+            const udpClient = dgram.createSocket("udp4");
+            udpClient.send(message, 5000, "localhost", (err) => {
+            });
+            done();
+          }
           break;
       }
     };
@@ -217,7 +222,9 @@ describe("Default Tests", function () {
           player1Connection.send(JSON.stringify(createReq));
           break;
         case "notification":
-          expect(jsonObj.notificationText).equal("new-room-created-in-lobby");
+          expect(jsonObj.notificationText === "new-room-created-in-lobby" ||
+            jsonObj.notificationText === "rooms-updated"
+          ).equal(true);
           break;
         case "roomCreated":
           roomId = jsonObj.room.roomId;
@@ -346,8 +353,12 @@ describe("Default Tests", function () {
             player4Connection.send(JSON.stringify(joinRoomReq));
             break;
           case "notification":
-            expect(jsonObj.notificationText).equal('join-room-faliure');
-            player2Connection.close();
+            expect(jsonObj.notificationText === "join-room-faliure" ||
+              jsonObj.notificationText === "rooms-updated"
+            ).equal(true);
+            if (jsonObj.notificationText === "join-room-faliure") {
+              player2Connection.close();
+            }
             break;
           case "GamePlayEvent":
             expect(jsonObj.stringData[stringData.length - 1]).equal("testing");
