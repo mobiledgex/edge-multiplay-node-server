@@ -59,8 +59,18 @@ function joinRoomRequest (roomId, playerName, playerId, playerAvatar) {
     return joinRoomReq;
 }
 
+function exitRoomRequest (roomId, playerId) {
+    let exitRoomReq = {};
+    exitRoomReq.type = "ExitRoom";
+    exitRoomReq.roomId = roomId;
+    exitRoomReq.playerId = playerId;
+    console.log({ exitRoomReq });
+    return exitRoomReq;
+}
+
 module.exports.client_util = {
     createRoomRequest,
     joinOrCreateRoomRequest,
     joinRoomRequest,
+    exitRoomRequest,
 };

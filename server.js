@@ -189,6 +189,7 @@ function startEdgeMultiplay () {
             );
             if (exitRoomSuccess === true) {
               util.getLobbyStats(lobby);
+              roomId = undefined;
             }
             break;
           case "GamePlayEvent":
@@ -324,6 +325,25 @@ function startEdgeMultiplay () {
     });
   });
 
+  udpServer.on('close', () => {
+    console.log("UDP Server closed");
+  });
+
+  statsServer.on('close', () => {
+    console.log("Stats Server closed");
+  });
+  wsStatsServer.on("close", () => {
+    console.log("WebSockets Stats Server closed");
+  });
+
+  server.on('close', () => {
+    console.log("Main Server closed");
+  });
+
+  wsServer.on('close', () => {
+    console.log("WebSocket Server closed");
+  });
+
   app.get("/", (_req, res) => {
     res.render("index", {
       layout: "main",
@@ -361,6 +381,27 @@ function rejectConnection (connection) {
   socket.destroy();
 }
 
+function closeServer () {
+  wsServer.clients.forEach((client) => {
+    client.close();
+  });
+  wsServer.close(() => {
+    console.log("Closing WebSocketServer");
+  });
+  udpServer.close(() => {
+    console.log("Closing UdpServer");
+  });
+  wsStatsServer.close(() => {
+    console.log("Closing wsStatsServer");
+  });
+  statsServer.close(() => {
+    console.log("Closing statsServer");
+  });
+  server.close(() => {
+    console.log("Closing Main server");
+  });
+}
+
 //create a server object:
 module.exports = {
   statsEmitter,
@@ -371,4 +412,5 @@ module.exports = {
   rejectConnection,
   config,
   startEdgeMultiplay,
+  closeServer
 };

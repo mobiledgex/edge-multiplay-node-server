@@ -64,7 +64,7 @@ class Room {
             this.gameStarted = this.roomMembers.length >= this.minPlayersToStartGame;
         }
         catch (error) {
-            console.log('error removing player from the room');
+            console.log(`error removing player from the room, ${error}`);
             return false;
         }
     }
