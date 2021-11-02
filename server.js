@@ -194,6 +194,9 @@ function startEdgeMultiplay () {
             break;
           case "GamePlayEvent":
             var room = lobby.rooms.get(jsonObj.roomId);
+            if (jsonObj instanceof Events.GamePlayEvent === false) {
+              throw new Error(`Error parsing websocket message, message received: ${msgStr}`);
+            }
             if (room !== undefined) {
               room.broadcastGamePlayEvent(lobby, jsonObj);
             }
@@ -255,8 +258,7 @@ function startEdgeMultiplay () {
       var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString();
       var jsonObj = JSON.parse(gameplayEventStr);
       if (jsonObj instanceof Events.GamePlayEvent === false) {
-        console.log("Received unkonw event", jsonObj);
-        console.log("Received unkonw event", Events.GamePlayEvent);
+        console.log("Received unknown event", jsonObj);
         throw new Error(`Can't parse udp message, UDP server is allowed to receive GamePlayEvents only but received ${{ jsonObj }}`);
       }
       var roomId = jsonObj.roomId;
@@ -330,6 +332,7 @@ function startEdgeMultiplay () {
   statsServer.on('close', () => {
     console.log("Stats Server closed");
   });
+
   wsStatsServer.on("close", () => {
     console.log("WebSockets Stats Server closed");
   });

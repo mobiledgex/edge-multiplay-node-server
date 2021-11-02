@@ -217,31 +217,31 @@ class GamePlayEvent extends Event {
       console.error("wrong event type");
       return false;
     }
-    if (obj.senderId === "") {
+    if (obj.senderId === "" || obj.senderId === undefined) {
       console.error("missing senderId");
       return false;
     }
-    if (obj.roomId === "") {
+    if (obj.roomId === "" || obj.roomId === undefined) {
       console.error("missing room id");
       return false;
     }
-    if (obj.eventName === "") {
+    if (obj.eventName === "" || obj.eventName === undefined) {
       console.error("missing event name");
       return false;
     }
-    if (typeof (obj.stringData) === Array) {
+    if (obj.stringData !== undefined && !Array.isArray(obj.stringData)) {
       console.error("stringData is not an array");
       return false;
     }
-    if (typeof (obj.floatData) === Array) {
+    if (obj.floatData !== undefined && !Array.isArray(obj.floatData)) {
       console.error("floatData is not an array");
       return false;
     }
-    if (typeof (obj.integerData) === Array) {
+    if (obj.integerData !== undefined && !Array.isArray(obj.integerData)) {
       console.error("integerData is not an array");
       return false;
     }
-    if (typeof (obj.booleanData) === Array) {
+    if (obj.booleanData !== undefined && !Array.isArray(obj.booleanData)) {
       console.error("booleanData is not an array");
       return false;
     }

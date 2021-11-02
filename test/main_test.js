@@ -134,8 +134,9 @@ describe("Default Tests", function () {
     };
   });
   it("Test GamePlayEvents", (done) => {
-    var player3Id,
-      roomId = "";
+    var player3Id;
+    var serverNotifications = [];
+    roomId = "";
     expect(edgeMultiplay.lobby.rooms.size).equal(1);
     expect(edgeMultiplay.lobby.availableRooms.size).equal(1);
     expect(edgeMultiplay.lobby.fullRooms.size).equal(0);
@@ -156,6 +157,9 @@ describe("Default Tests", function () {
           player3Id = jsonObj.playerId;
           ws3.send(JSON.stringify(joinRoom));
           break;
+        case "notification":
+          serverNotifications.push(jsonObj);
+          break;
         case "roomJoin":
           roomId = jsonObj.room.roomId;
           expect(edgeMultiplay.lobby.rooms.size).equal(1);
@@ -173,11 +177,40 @@ describe("Default Tests", function () {
             const udpClient = dgram.createSocket("udp4");
             udpClient.send(message, 5000, "localhost", (err) => {
             });
-            done();
+            var missingEventNameEvent = {
+              type: "GamePlayEvent",
+              roomId,
+              senderId: player3Id,
+            };
+            missingEventNameEvent = JSON.stringify(missingEventNameEvent);
+            ws3.send(missingEventNameEvent);
+
+            var missingRoomIdEvent = {
+              type: "GamePlayEvent",
+              roomId,
+              senderId: player3Id,
+            };
+            missingRoomIdEvent = JSON.stringify(missingRoomIdEvent);
+            ws3.send(missingRoomIdEvent);
+
+            var missingSenderIdEvent = {
+              type: "GamePlayEvent",
+              roomId,
+            };
+            missingSenderIdEvent = JSON.stringify(missingSenderIdEvent);
+            ws3.send(missingSenderIdEvent);
           }
           break;
       }
     };
+    setTimeout(() => {
+      expect(serverNotifications.length).equal(4);
+      expect(serverNotifications[0].notificationText).equal('rooms-updated');
+      expect(serverNotifications[1].notificationText).equal('parsing-error');
+      expect(serverNotifications[2].notificationText).equal('parsing-error');
+      expect(serverNotifications[2].notificationText).equal('parsing-error');
+      done();
+    }, 100);
   });
 
   it("Refresh Lobby", (done) => {
