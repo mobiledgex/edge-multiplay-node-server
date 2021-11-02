@@ -181,9 +181,6 @@ describe("Default Tests", function () {
   });
 
   it("Refresh Lobby", (done) => {
-    expect(
-      edgeMultiplay.lobby.rooms.get(roomId).udpConnections.size
-    ).equal(1);
     edgeMultiplay.wsServer.clients.forEach((client) => {
       client.close();
     });
@@ -232,7 +229,6 @@ describe("Test start game with min players and allow other players to join till 
 
   it("Launch 2nd Player in the room", (done) => {
 
-    // setTimeout(() => {
     player2Connection = new WebSocket("ws://localhost:3000");
     player2Connection.onopen = function () {
       console.log("client 2 is open");
@@ -251,7 +247,6 @@ describe("Test start game with min players and allow other players to join till 
             jsonObj.playerId,
             0,
           );
-          // console.log({ joinRoomReq });
           player2Connection.send(JSON.stringify(joinRoomReq));
           break;
         case "roomJoin":
@@ -324,7 +319,6 @@ describe("Test start game with min players and allow other players to join till 
         case "notification":
           expect(jsonObj.notificationText
           ).equal("join-room-faliure");
-          // player4Connection.removeListener('message', wsHandler);
           done();
           break;
       }
@@ -373,7 +367,8 @@ describe("Test start game with min players and allow other players to join till 
     };
   });
 });
-describe("Close server", () => {
+describe("Close server", function () {
+  this.timeout(5000);
   it("Clean Up", (done) => {
     edgeMultiplay.wsServer.clients.forEach((client) => {
       client.close();
@@ -381,6 +376,6 @@ describe("Close server", () => {
     edgeMultiplay.closeServer();
     setTimeout(() => {
       done();
-    }, 1000);
+    }, 2000);
   });
 });
