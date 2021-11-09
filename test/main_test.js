@@ -284,12 +284,12 @@ describe("Test start game with min players and allow other players to join till 
           break;
         case "roomJoin":
           expect(jsonObj.room.roomMembers.length).equal(2);
-          break;
-        case "gameStart":
-          expect(jsonObj.room.roomMembers.length).equal(2);
-          expect(jsonObj.room.roomMembers[0].playerName).equal("Player1");
-          expect(jsonObj.room.gameStarted).equal(true);
-          done();
+          if (jsonObj.room.roomMembers.length === jsonObj.room.minPlayersToStartGame) {
+            expect(jsonObj.room.roomMembers.length).equal(2);
+            expect(jsonObj.room.roomMembers[0].playerName).equal("Player1");
+            expect(jsonObj.room.gameStarted).equal(true);
+            done();
+          }
           break;
       }
     };

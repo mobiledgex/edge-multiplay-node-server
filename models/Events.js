@@ -31,21 +31,6 @@ class Event {
     return JSON.stringify(this);
   }
 }
-/**
- * Class representing a Game Start Event, A game start event is sent once the number of room members reaches the maximum players per room.
- * @extends Event
- */
-class GameStartEvent extends Event {
-  /**
-   * @constructor
-   * @param  {Room} room a Room Object contains the room members along with the UDP Ports assigned to each player by the server
-   */
-  constructor (room) {
-    super();
-    this.type = "gameStart";
-    this.room = room;
-  }
-}
 
 /**
  * Class representing a Room Join Event, RoomJoinEvent is sent from the server to the player once a JoinRoom request succeed
@@ -253,7 +238,6 @@ module.exports.Events = {
   RoomCreatedEvent,
   RoomJoinEvent,
   RoomCreatedEvent,
-  GameStartEvent,
   RoomsListEvent,
   GamePlayEvent,
   PlayerJoinedRoomEvent,

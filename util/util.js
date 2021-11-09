@@ -160,10 +160,7 @@ function joinRoom (
     connection.send(new events.RoomJoinEvent(room).convertToJSONString());
     var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room);
     room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId);
-    // send game start event if game didn't start yet
-    if (room.isReadyToStartGame()) {
-        room.broadcastGameFlowEvent(lobby, new events.GameStartEvent(room));
-    }
+
     // if room is full mark room notify lobby
     if (room.isFull()) {
         lobby.markRoomAsFull(room);

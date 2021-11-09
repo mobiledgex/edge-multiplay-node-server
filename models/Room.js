@@ -73,9 +73,6 @@ class Room {
         return this.roomMembers.length === this.maxPlayersPerRoom;
     }
 
-    isReadyToStartGame () {
-        return this.roomMembers.length === this.minPlayersToStartGame;
-    }
 
     isEmpty () {
         return this.roomMembers.length === 0;
