@@ -31,21 +31,6 @@ class Event {
     return JSON.stringify(this);
   }
 }
-/**
- * Class representing a Game Start Event, A game start event is sent once the number of room members reaches the maximum players per room.
- * @extends Event
- */
-class GameStartEvent extends Event {
-  /**
-   * @constructor
-   * @param  {Room} room a Room Object contains the room members along with the UDP Ports assigned to each player by the server
-   */
-  constructor (room) {
-    super();
-    this.type = "gameStart";
-    this.room = room;
-  }
-}
 
 /**
  * Class representing a Room Join Event, RoomJoinEvent is sent from the server to the player once a JoinRoom request succeed
@@ -212,13 +197,47 @@ class GamePlayEvent extends Event {
     this.floatData = floatData;
     this.booleanData = booleanData;
   }
+  static [Symbol.hasInstance] (obj) {
+    if (obj.type !== "GamePlayEvent") {
+      console.error("wrong event type");
+      return false;
+    }
+    if (obj.senderId === "" || obj.senderId === undefined) {
+      console.error("missing senderId");
+      return false;
+    }
+    if (obj.roomId === "" || obj.roomId === undefined) {
+      console.error("missing room id");
+      return false;
+    }
+    if (obj.eventName === "" || obj.eventName === undefined) {
+      console.error("missing event name");
+      return false;
+    }
+    if (obj.stringData !== undefined && !Array.isArray(obj.stringData)) {
+      console.error("stringData is not an array");
+      return false;
+    }
+    if (obj.floatData !== undefined && !Array.isArray(obj.floatData)) {
+      console.error("floatData is not an array");
+      return false;
+    }
+    if (obj.integerData !== undefined && !Array.isArray(obj.integerData)) {
+      console.error("integerData is not an array");
+      return false;
+    }
+    if (obj.booleanData !== undefined && !Array.isArray(obj.booleanData)) {
+      console.error("booleanData is not an array");
+      return false;
+    }
+    return true;
+  }
 }
 module.exports.Events = {
   RegisterEvent,
   RoomCreatedEvent,
   RoomJoinEvent,
   RoomCreatedEvent,
-  GameStartEvent,
   RoomsListEvent,
   GamePlayEvent,
   PlayerJoinedRoomEvent,

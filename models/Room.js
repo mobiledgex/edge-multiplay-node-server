@@ -25,12 +25,15 @@ class Room {
     /**
      * @constructor
      * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
+     * @param  {integer} minPlayersToStartGame minimum players to start the game, more players can join afterwards as long as the number of players in a room is less than maxPlayersPerRoom, when minPlayersToStartGame is less than 2 minPlayersToStartGame will be equal maxPlayersPerRoom 
      */
-    constructor (maxPlayersPerRoom) {
+    constructor (maxPlayersPerRoom, minPlayersToStartGame = 0) {
         this.roomId = uuidv4();
         this.roomMembers = [];
+        this.minPlayersToStartGame = minPlayersToStartGame < 2 ? maxPlayersPerRoom : minPlayersToStartGame;
         this.maxPlayersPerRoom = maxPlayersPerRoom;
         this.udpConnections = new Map();
+        this.gameStarted = false;
     }
 
     /**
@@ -38,6 +41,7 @@ class Room {
      */
     addPlayer (player) {
         this.roomMembers.push(player);
+        this.gameStarted = this.roomMembers.length >= this.minPlayersToStartGame;
     }
 
     /**
@@ -57,9 +61,10 @@ class Room {
                 updatedRoomMembers[counter].playerIndex = counter;
             }
             this.roomMembers = updatedRoomMembers;
+            this.gameStarted = this.roomMembers.length >= this.minPlayersToStartGame;
         }
         catch (error) {
-            console.log('error removing player from the room');
+            console.log(`error removing player from the room, ${error}`);
             return false;
         }
     }
@@ -67,6 +72,7 @@ class Room {
     isFull () {
         return this.roomMembers.length === this.maxPlayersPerRoom;
     }
+
 
     isEmpty () {
         return this.roomMembers.length === 0;

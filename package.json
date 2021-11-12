@@ -4,7 +4,7 @@
   "description": "A sample server for matchmaking & a relay server for multiplayer experiences",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node example.js",
     "test": "mocha --exit"
   },
   "keywords": [

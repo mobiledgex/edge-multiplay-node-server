@@ -19,7 +19,8 @@ function createRoomRequest (
     playerName,
     playerId,
     playerAvatar,
-    maxPlayersPerRoom
+    maxPlayersPerRoom,
+    minPlayersToStartGame
 ) {
     let createReq = {};
     createReq.type = "CreateRoom";
@@ -27,6 +28,7 @@ function createRoomRequest (
     createReq.playerId = playerId;
     createReq.playerAvatar = playerAvatar;
     createReq.maxPlayersPerRoom = maxPlayersPerRoom;
+    createReq.minPlayersToStartGame = minPlayersToStartGame;
     return createReq;
 }
 
@@ -34,7 +36,8 @@ function joinOrCreateRoomRequest (
     playerName,
     playerId,
     playerAvatar,
-    maxPlayersPerRoom
+    maxPlayersPerRoom,
+    minPlayersToStartGame
 ) {
     let joinOrCreateReq = {};
     joinOrCreateReq.type = "JoinOrCreateRoom";
@@ -42,6 +45,7 @@ function joinOrCreateRoomRequest (
     joinOrCreateReq.playerId = playerId;
     joinOrCreateReq.playerAvatar = playerAvatar;
     joinOrCreateReq.maxPlayersPerRoom = maxPlayersPerRoom;
+    joinOrCreateReq.minPlayersToStartGame = minPlayersToStartGame;
     return joinOrCreateReq;
 }
 
@@ -55,8 +59,18 @@ function joinRoomRequest (roomId, playerName, playerId, playerAvatar) {
     return joinRoomReq;
 }
 
+function exitRoomRequest (roomId, playerId) {
+    let exitRoomReq = {};
+    exitRoomReq.type = "ExitRoom";
+    exitRoomReq.roomId = roomId;
+    exitRoomReq.playerId = playerId;
+    console.log({ exitRoomReq });
+    return exitRoomReq;
+}
+
 module.exports.client_util = {
     createRoomRequest,
     joinOrCreateRoomRequest,
     joinRoomRequest,
+    exitRoomRequest,
 };
