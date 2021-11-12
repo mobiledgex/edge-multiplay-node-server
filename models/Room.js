@@ -17,6 +17,8 @@
 
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
+const { logger } = require("../config");
+
 /**
  * Class representing a Room.
  * 
@@ -64,7 +66,7 @@ class Room {
             this.gameStarted = this.roomMembers.length >= this.minPlayersToStartGame;
         }
         catch (error) {
-            console.log(`error removing player from the room, ${error}`);
+            logger.error(`error removing player from the room, ${error}`);
             return false;
         }
     }

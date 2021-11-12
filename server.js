@@ -45,6 +45,7 @@ const app = new express();
 const statsServer = require("http").createServer(app);
 const wsStatsServer = new WebSocket.Server({ server: statsServer });
 const statsEmitter = new EventEmitter();
+const { logger } = config;
 
 if (require.main === module) {
   //the script runs directly
@@ -94,13 +95,13 @@ function startEdgeMultiplay () {
   });
 
   wsServer.on("connection", function connection (ws, request) {
-    console.log("num of rooms in the Lobby : " + lobby.rooms.size);
-    console.log("player Connected");
+    logger.info("num of rooms in the Lobby : " + lobby.rooms.size);
+    logger.info("player Connected");
     let playerKey = request.headers["sec-websocket-key"];
     let playerId = lobby.addPlayer(playerKey, ws);
     let roomId = "";
 
-    console.log(`sending registerEvent to client`);
+    logger.info("Sending registerEvent to client");
     ws.send(
       new Events.RegisterEvent(playerId, playerKey).convertToJSONString()
     );
@@ -110,7 +111,7 @@ function startEdgeMultiplay () {
         jsonObj = JSON.parse(msgStr);
         switch (jsonObj.type) {
           case "JoinOrCreateRoom":
-            console.log(
+            logger.info(
               "JoinOrCreateRoom Request received from client %o",
               jsonObj
             );
@@ -128,7 +129,7 @@ function startEdgeMultiplay () {
             }
             break;
           case "GetRooms":
-            console.log("GetRooms Request received from client %o", jsonObj);
+            logger.info("GetRooms Request received from client %o", jsonObj);
             var connection = lobby.getPlayerConnection(playerId);
             var roomsArray = Array.from(lobby.rooms, ([, room]) => room);
             var roomsListEvent = new Events.RoomsListEvent(
@@ -137,7 +138,7 @@ function startEdgeMultiplay () {
             connection.send(roomsListEvent);
             break;
           case "GetAvailableRooms":
-            console.log(
+            logger.info(
               "GetAvailableRooms Request received from client %o",
               jsonObj
             );
@@ -152,7 +153,7 @@ function startEdgeMultiplay () {
             connection.send(availableRoomsListEvent);
             break;
           case "CreateRoom":
-            console.log("CreateRoom Request received from client %o", jsonObj);
+            logger.info("CreateRoom Request received from client %o", jsonObj);
             roomId = util.createRoom(
               lobby,
               jsonObj.playerId,
@@ -167,7 +168,7 @@ function startEdgeMultiplay () {
             }
             break;
           case "JoinRoom":
-            console.log("JoinRoom Request received from client %o", jsonObj);
+            logger.info("JoinRoom Request received from client %o", jsonObj);
             roomId = util.joinRoom(
               lobby,
               jsonObj.roomId,
@@ -181,7 +182,7 @@ function startEdgeMultiplay () {
             }
             break;
           case "ExitRoom":
-            console.log("ExitRoom Request received from client %o", jsonObj);
+            logger.info("ExitRoom Request received from client %o", jsonObj);
             exitRoomSuccess = util.exitRoom(
               lobby,
               jsonObj.roomId,
@@ -202,8 +203,8 @@ function startEdgeMultiplay () {
             }
             break;
           default:
-            console.log(
-              "Unknown msg Received from client with type " + jsonObj.type
+            logger.warn(
+              "Unknown msg Received from client with type %o ", jsonObj
             );
             break;
         }
@@ -211,16 +212,16 @@ function startEdgeMultiplay () {
         ws.send(
           new Events.NotificationEvent("parsing-error").convertToJSONString()
         );
-        console.log("Error parsing received message \n" + err);
+        logger.error("Error parsing received message \n" + err);
       }
     });
 
     ws.on("error", (err) => {
-      console.log(`WebSocket Server error : ${err}`);
+      logger.error(`WebSocket Server error : ${err}`);
     });
 
     ws.on("close", () => {
-      console.log(`member left, member uuid : ${playerId}, roomId : ${roomId}`);
+      logger.info(`member left, member uuid : ${playerId}, roomId : ${roomId}`);
       // remove member from room
       var room = lobby.rooms.get(roomId);
       // remove player connection
@@ -249,7 +250,7 @@ function startEdgeMultiplay () {
   });
 
   udpServer.on("error", (err) => {
-    console.log(`UDP server error:\n${err.stack}`);
+    logger.error(`UDP server error:\n${err.stack}`);
     udpServer.close();
   });
 
@@ -258,7 +259,7 @@ function startEdgeMultiplay () {
       var gameplayEventStr = new Buffer.from(gameplayEventBinary).toString();
       var jsonObj = JSON.parse(gameplayEventStr);
       if (jsonObj instanceof Events.GamePlayEvent === false) {
-        console.log("Received unknown event", jsonObj);
+        logger.warn("Received unknown event", jsonObj);
         throw new Error(`Can't parse udp message, UDP server is allowed to receive GamePlayEvents only but received ${{ jsonObj }}`);
       }
       var roomId = jsonObj.roomId;
@@ -299,24 +300,24 @@ function startEdgeMultiplay () {
         }
       }
     } catch (e) {
-      console.log("error parsing gamePlayEvent \n" + e);
+      logger.error("error parsing gamePlayEvent \n" + e);
     }
   });
 
   udpServer.on("listening", () => {
     const udp_address = udpServer.address();
-    console.log(`UDP server listening on ${udp_address.port}`);
+    logger.info(`UDP server listening on ${udp_address.port}`);
   });
 
   udpServer.bind(UDP_PORT);
 
   server.listen(TCP_PORT, () => {
     const address = server.address();
-    console.log(`WebSocket is listening on ${address.port}`);
+    logger.info(`WebSocket is listening on ${address.port}`);
   });
 
   statsServer.listen(STATS_PORT, () => {
-    console.log(`Stats server listening on ${STATS_PORT}`);
+    logger.info(`Stats server listening on ${STATS_PORT}`);
   });
 
   wsStatsServer.on("connection", () => {
@@ -326,23 +327,23 @@ function startEdgeMultiplay () {
   });
 
   udpServer.on('close', () => {
-    console.log("UDP Server closed");
+    logger.info("UDP Server closed");
   });
 
   statsServer.on('close', () => {
-    console.log("Stats Server closed");
+    logger.info("Stats Server closed");
   });
 
   wsStatsServer.on("close", () => {
-    console.log("WebSockets Stats Server closed");
+    logger.info("WebSockets Stats Server closed");
   });
 
   server.on('close', () => {
-    console.log("Main Server closed");
+    logger.info("Main Server closed");
   });
 
   wsServer.on('close', () => {
-    console.log("WebSocket Server closed");
+    logger.info("WebSocket Server closed");
   });
 
   app.get("/", (_req, res) => {
@@ -378,7 +379,7 @@ function addToLobby (connection) {
  */
 function rejectConnection (connection) {
   var { socket } = connection;
-  console.log("destroying connection");
+  logger.warn("Connection is not authorized, Destroying connection");
   socket.destroy();
 }
 
@@ -387,19 +388,19 @@ function closeServer () {
     client.close();
   });
   wsServer.close(() => {
-    console.log("Closing WebSocketServer");
+    logger.info("Closing WebSocketServer");
   });
   udpServer.close(() => {
-    console.log("Closing UdpServer");
+    logger.info("Closing UdpServer");
   });
   wsStatsServer.close(() => {
-    console.log("Closing wsStatsServer");
+    logger.info("Closing wsStatsServer");
   });
   statsServer.close(() => {
-    console.log("Closing statsServer");
+    logger.info("Closing statsServer");
   });
   server.close(() => {
-    console.log("Closing Main server");
+    logger.info("Closing Main server");
   });
 }
 
