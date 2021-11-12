@@ -101,7 +101,7 @@ function startEdgeMultiplay () {
     let playerId = lobby.addPlayer(playerKey, ws);
     let roomId = "";
 
-    logger.info(`Sending registerEvent to client, ${ws.address}`);
+    logger.info("Sending registerEvent to client");
     ws.send(
       new Events.RegisterEvent(playerId, playerKey).convertToJSONString()
     );
