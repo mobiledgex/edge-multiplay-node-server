@@ -19,6 +19,7 @@ const Room = require("../models/Room").Room;
 const Player = require("../models/Player").Player;
 const events = require("../models/Events").Events;
 const UDPClient = require("../models/UDPClient").UDPClient;
+const { logger } = require("../config");
 
 /**
  * @module MatchMakingFunctions
@@ -85,7 +86,7 @@ function createRoom (
 ) {
     let connection = lobby.getPlayerConnection(playerId);
     if (connection === undefined) {
-        console.log("cannot find player connection");
+        logger.error("cannot find player connection");
         return undefined;
     }
 
@@ -93,7 +94,7 @@ function createRoom (
         connection.send(
             new events.NotificationEvent("create-room-faliure").convertToJSONString()
         );
-        console.log(
+        logger.warn(
             "Lobby reached maximum rooms threshold, Create room request failed"
         );
         return undefined;
@@ -127,7 +128,7 @@ function joinRoom (
 ) {
     var connection = lobby.getPlayerConnection(playerId);
     if (lobby.availableRooms.size === 0) {
-        console.log("No rooms available in the lobby, Failing the Join request");
+        logger.warn("No rooms available in the lobby, Failing the Join request");
         connection.send(
             new events.NotificationEvent("join-room-faliure").convertToJSONString()
         );
@@ -135,14 +136,14 @@ function joinRoom (
     }
     var room = lobby.rooms.get(roomId);
     if (room === undefined) {
-        console.log("Room not found, Failing the Join request");
+        logger.warn("Room not found, Failing the Join request");
         connection.send(
             new events.NotificationEvent("join-room-faliure").convertToJSONString()
         );
         return undefined;
     }
     if (room.isFull()) {
-        console.log("Room is full, Failing the Join request");
+        logger.warn("Room is full, Failing the Join request");
         connection.send(
             new events.NotificationEvent("join-room-faliure").convertToJSONString()
         );
@@ -156,7 +157,7 @@ function joinRoom (
         playerTags
     );
     room.addPlayer(newPlayer);
-    console.log("Member Joined Room", { newPlayer });
+    logger.info("Member Joined Room", { newPlayer });
     connection.send(new events.RoomJoinEvent(room).convertToJSONString());
     var playerJoinedRoomEvent = new events.PlayerJoinedRoomEvent(room);
     room.broadcastGameFlowEvent(lobby, playerJoinedRoomEvent, jsonObj.playerId);
@@ -178,16 +179,16 @@ function joinRoom (
 function exitRoom (lobby, roomId, playerId) {
     var room = lobby.rooms.get(roomId);
     if (room === undefined) {
-        console.log("exitRoom failed, room not found");
+        logger.error("exitRoom failed, room not found");
         return false;
     }
     var playerRemoved = room.removePlayer(playerId);
     if (playerRemoved === false) {
-        console.log("exitRoom failed, player not found");
+        logger.error("exitRoom failed, player not found");
         return false;
     }
     if (room.isEmpty()) {
-        console.log("Deleting room, since there is no players left in the room");
+        logger.warn("Deleting room, since there is no players left in the room");
         lobby.removeRoom(roomId);
     } else {
         // add room to availableRooms list

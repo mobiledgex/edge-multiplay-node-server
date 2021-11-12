@@ -64,7 +64,6 @@ function exitRoomRequest (roomId, playerId) {
     exitRoomReq.type = "ExitRoom";
     exitRoomReq.roomId = roomId;
     exitRoomReq.playerId = playerId;
-    console.log({ exitRoomReq });
     return exitRoomReq;
 }
 
