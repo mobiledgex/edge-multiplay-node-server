@@ -37,7 +37,7 @@ npm install edge-multiplay
 ```
 Example of Usage
 ```
-const edgeMultiplay = require('edge-multiplay')
+const edgeMultiplay = require('edge-multiplay')() //you can specify your ports here see example.js
 
 edgeMultiplay.wsServer.on('newConnection',(path, connection)=>{
   // your logic goes here 
