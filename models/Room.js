@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-const WebSocket = require('ws')
-const { v4: uuidv4 } = require('uuid')
+const WebSocket = require('ws');
+const { v4: uuidv4 } = require('uuid');
+const { logger } = require("../config");
+
 /**
  * Class representing a Room.
  * 
@@ -25,51 +27,57 @@ class Room {
     /**
      * @constructor
      * @param  {integer} maxPlayersPerRoom maximum players per room, must be greater than 1
+     * @param  {integer} minPlayersToStartGame minimum players to start the game, more players can join afterwards as long as the number of players in a room is less than maxPlayersPerRoom, when minPlayersToStartGame is less than 2 minPlayersToStartGame will be equal maxPlayersPerRoom 
      */
-    constructor(maxPlayersPerRoom) {
-        this.roomId = uuidv4()
-        this.roomMembers = []
-        this.maxPlayersPerRoom = maxPlayersPerRoom
-        this.udpConnections = new Map()
+    constructor (maxPlayersPerRoom, minPlayersToStartGame = 0) {
+        this.roomId = uuidv4();
+        this.roomMembers = [];
+        this.minPlayersToStartGame = minPlayersToStartGame < 2 ? maxPlayersPerRoom : minPlayersToStartGame;
+        this.maxPlayersPerRoom = maxPlayersPerRoom;
+        this.udpConnections = new Map();
+        this.gameStarted = false;
     }
 
     /**
      * @param  {Player} player Player object, representing the player to be added to the room
      */
-    addPlayer(player) {
-        this.roomMembers.push(player)
+    addPlayer (player) {
+        this.roomMembers.push(player);
+        this.gameStarted = this.roomMembers.length >= this.minPlayersToStartGame;
     }
 
     /**
      * @param  {string} playerId unique player id assigned once the connection is established using uuid package
      */
-    removePlayer(playerId) {
-        var updatedRoomMembers, counter
+    removePlayer (playerId) {
+        var updatedRoomMembers, counter;
         try {
-            this.udpConnections.delete(playerId)
+            this.udpConnections.delete(playerId);
             this.roomMembers.forEach((roomMember, index, object) => {
                 if (roomMember.playerId === playerId) {
-                    object.splice(index, 1)
-                    updatedRoomMembers = object
+                    object.splice(index, 1);
+                    updatedRoomMembers = object;
                 }
-            })
+            });
             for (counter = 0; counter < updatedRoomMembers.length; counter++) {
-                updatedRoomMembers[counter].playerIndex = counter
+                updatedRoomMembers[counter].playerIndex = counter;
             }
-            this.roomMembers = updatedRoomMembers
+            this.roomMembers = updatedRoomMembers;
+            this.gameStarted = this.roomMembers.length >= this.minPlayersToStartGame;
         }
         catch (error) {
-            console.log('error removing player from the room')
-            return false
+            logger.error(`error removing player from the room, ${error}`);
+            return false;
         }
     }
 
-    isFull() {
-        return this.roomMembers.length === this.maxPlayersPerRoom
+    isFull () {
+        return this.roomMembers.length === this.maxPlayersPerRoom;
     }
 
-    isEmpty() {
-        return this.roomMembers.length === 0
+
+    isEmpty () {
+        return this.roomMembers.length === 0;
     }
 
     /**
@@ -77,24 +85,24 @@ class Room {
      * @param  {Event} Event Event object, representing the event to be broadcasted from the sender to the sender's room
      * @param  {string} senderId the playerId of the sender, a playerId is a unique player id assigned once the connection is established using uuid package
      */
-    broadcastGameFlowEvent(lobby, Event, senderId) {
+    broadcastGameFlowEvent (lobby, Event, senderId) {
         if (typeof senderId !== "undefined") {
             this.roomMembers.forEach(player => {
-                if (senderId != player.playerId) {
-                    var playerConnection = lobby.getPlayerConnection(player.playerId)
+                if (senderId !== player.playerId) {
+                    var playerConnection = lobby.getPlayerConnection(player.playerId);
                     if (playerConnection !== undefined && playerConnection.readyState === WebSocket.OPEN) {
-                        playerConnection.send(Event.convertToJSONString())
+                        playerConnection.send(Event.convertToJSONString());
                     }
                 }
-            })
+            });
         }
         else {
             this.roomMembers.forEach(player => {
-                var playerConnection = lobby.getPlayerConnection(player.playerId)
+                var playerConnection = lobby.getPlayerConnection(player.playerId);
                 if (playerConnection !== undefined && playerConnection.readyState === WebSocket.OPEN) {
-                    playerConnection.send(Event.convertToJSONString())
+                    playerConnection.send(Event.convertToJSONString());
                 }
-            })
+            });
         }
     }
 
@@ -103,15 +111,15 @@ class Room {
      * @param  {GamePlayEvent} gamePlayEvent GamePlayEvent object, representing the gamePlayEvent to be broadcasted from the sender to the sender's room
      * @param  {string} senderId the playerId of the sender, a playerId is a unique player id assigned once the connection is established using uuid package
      */
-    broadcastGamePlayEvent(lobby, gamePlayEvent, senderId) {
+    broadcastGamePlayEvent (lobby, gamePlayEvent, senderId) {
         this.roomMembers.forEach(player => {
-            if (senderId != player.playerId) {
-                var playerConnection = lobby.getPlayerConnection(player.playerId)
+            if (senderId !== player.playerId) {
+                var playerConnection = lobby.getPlayerConnection(player.playerId);
                 if (playerConnection !== undefined && playerConnection.readyState === WebSocket.OPEN) {
-                    playerConnection.send(JSON.stringify(gamePlayEvent))
+                    playerConnection.send(JSON.stringify(gamePlayEvent));
                 }
             }
-        })
+        });
     }
 }
-module.exports.Room = Room
+module.exports.Room = Room;

@@ -2,7 +2,7 @@ region: EU
 app: 
   key: 
     name: EdgeMultiplay
-    version: 1.2
+    version: 1.3
     organization: MobiledgeX-Samples
   image_path: docker.mobiledgex.net/mobiledgex-samples/images/edge-multiplay
   image_type: 1
